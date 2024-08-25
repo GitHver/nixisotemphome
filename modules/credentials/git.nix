@@ -1,10 +1,14 @@
-{ pkgs, ... }:
+{ pkgs, patt, ... }:
 
-{
- #====<< Credentials >>========================================================>
+let
+  inherit (patt) username email;
+in {
+
+  #====<< Credentials >>=======================================================>
   programs.git = {
     enable = true;
-    userName  = "Your username";
-    userEmail = "your@email.provider";
+    userName  = username;
+    userEmail = email;
   };
+
 }

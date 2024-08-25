@@ -19,15 +19,18 @@ inputs = {
 outputs = { self, nixpkgs, home-manager, ... }@inputs: 
 
 let
-  ylib = inputs.nypkgs.lib."x86_64-linux";
-  username = "YOUR_USERNAME";
+  alib = nixpkgs.lib // home-manager.lib // inputs.nypkgs.lib."x86_64-linux";
+  patt = {
+    username = "YOUR_USERNAME";
+    email = "your@email.provider";
+  };
 in {
 
   homeConfigurations = { #==<< User home manager >>==========================>
-    "${username}" = home-manager.lib.homeManagerConfiguration {
+    "${patt.username}" = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules = [ ./home.nix ];
-      extraSpecialArgs = { inherit inputs username ylib; };
+      extraSpecialArgs = { inherit inputs patt alib; };
     };
   };
  

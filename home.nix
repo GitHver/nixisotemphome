@@ -1,7 +1,8 @@
-{ config, lib, pkgs, username, ylib, ... }:
+{ config, pkgs, patt, alib, ... }:
 
 let
-  inherit (ylib) umport;
+  inherit (alib) umport;
+  inherit (patt) username;
 in
 
 { ################## Variable scope ############################################
@@ -73,7 +74,6 @@ in
     
    #==<< Misc >>=======================>
     wineWowPackages.stable  # Windows executable (.exe) translator
-    #wineWowPackages.unstable.override { waylandSupport = true; }
     #minecraft              # Minecraft
   ];
 
