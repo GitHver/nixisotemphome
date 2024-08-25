@@ -12,10 +12,12 @@ in with lib; {
   config = mkIf cfg.enable {
 
     home.packages = with pkgs; [
+      wl-clipboard
+      wayland-utils
+      cage
+
       waybar
       fuzzel
-      waypaper
-      swaylock
     ];
 
   };

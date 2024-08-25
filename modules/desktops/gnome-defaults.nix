@@ -1,39 +1,49 @@
-{pkgs, config, ... }:
+{pkgs, lib, config, ... }:
 
 let
-  gnomeCoreUtils = with pkgs; [
-  # ==== Gnome core ================== #
-    gnome-console             # (console) gnome's terminal emulator
-    nautilus                  # (files) file manager
-    gnome-text-editor         # (text editor) a basic text editor
-    gnome-system-monitor      # (system monitor) resource monitor
-    gnome-disk-utility        # (disks) disk formatter
-    gnome-tweaks              # (tweaks) extra gnome settings
-  # ==== Gnome extra ================= #
-    file-roller               # (archive manager) file extractor
-    baobab                    # (disk usage analyzer) storege space viewer
-    simple-scan               # (document scaner) printer interfacer
-    evince                    # (document viewer) yeah.
-    gnome.gnome-clocks        # (clocks) clock and timer util
-    gnome.gnome-characters    # (characters) special characters and emojis
-    gnome-font-viewer         # (fonts) font picker
-    gnome-connections         # (connections) remote desktop connections
-    gnome.gnome-logs          # (logs) system logs
-    gnome-calculator          # (calculator) a... calculator
-    dconf-editor              # (dconf editor) GUI for dconf
-  # ==== Gnome media ================= #
-    loupe                     # (image viewer) photo booth
-    gnome.gnome-music         # (music) music player
-    totem                     # (videos) video player  
-  ];
-  gnomeExtensionsList = with pkgs.gnomeExtensions; [
+  inherit (lib) mkOption mkIf types;
+  cfg = config.gnome-dconf;
+in {
+
+  options.gnome-dconf.enable = mkOption {
+    type = types.bool;
+    default = false;
+  };
+
+  config = let
+    gnomeCoreUtils = with pkgs; [
+    # ==== Gnome core ================== #
+      gnome-console             # (console) gnome's terminal emulator
+      nautilus                  # (files) file manager
+      gnome-text-editor         # (text editor) a basic text editor
+      gnome-system-monitor      # (system monitor) resource monitor
+      gnome-disk-utility        # (disks) disk formatter
+      gnome-tweaks              # (tweaks) extra gnome settings
+    # ==== Gnome extra ================= #
+      file-roller               # (archive manager) file extractor
+      baobab                    # (disk usage analyzer) storege space viewer
+      simple-scan               # (document scaner) printer interfacer
+      evince                    # (document viewer) yeah.
+      gnome.gnome-clocks        # (clocks) clock and timer util
+      gnome.gnome-characters    # (characters) special characters and emojis
+      gnome-font-viewer         # (fonts) font picker
+      gnome-connections         # (connections) remote desktop connections
+      gnome.gnome-logs          # (logs) system logs
+      gnome-calculator          # (calculator) a... calculator
+      dconf-editor              # (dconf editor) GUI for dconf
+    # ==== Gnome media ================= #
+      loupe                     # (image viewer) photo booth
+      gnome.gnome-music         # (music) music player
+      totem                     # (videos) video player  
+    ];
+    gnomeExtensionsList = with pkgs.gnomeExtensions; [
 /*1*/ paperwm
 /*2*/ vitals
 /*3*/ dash-to-dock
 /*4*/ blur-my-shell
 /*5*/ unblank
 /*6*/ custom-accent-colors
-  ];
+    ];
 # *1 A scrollable tiling windowmanager. Makes Gnome usable.
 # *2 A rescource monitor for the panel. *More stable* than system monitor.
 # *3 Moves the dash to a dock format to be always visable without the super key
@@ -41,7 +51,7 @@ let
 # *5 Prevents the screen from blanking
 # *6 choose an accent colour for the gnome interface
 
-in {
+  in mkIf cfg.enable {
 
   # downloads all extensions and applications
   home.packages = gnomeCoreUtils ++ gnomeExtensionsList;
@@ -177,5 +187,7 @@ in {
     };
 
   };
+
+};
 
 }

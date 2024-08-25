@@ -8,6 +8,9 @@ in
 { ################## Variable scope ############################################
 
   imports = umport { path = ./modules; recursive = true; };
+  config = {
+
+  gnome-dconf.enable = true;
 
  #====<< Home manager settings >>==============================================>
   home.username = "${username}";
@@ -108,5 +111,6 @@ in
     }; 
   
   };
+};
 
-} ################## End of variable scope #####################################
+}

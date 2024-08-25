@@ -29,7 +29,7 @@ format = '[$symbol](bold white) '
 disabled = false
 
 [os.symbols]
-NixOS = ''
+NixOS = ' '
 Unknown = '󰠥'
 
 # ---y

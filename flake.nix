@@ -12,6 +12,9 @@ inputs = {
   home-manager.url = "github:nix-community/home-manager";
   home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+  niri.url = "github:sodiboo/niri-flake";
+  niri.inputs.nixpkgs.follows = "nixpkgs";
+
   nypkgs.url = "github:yunfachi/nypkgs";
   nypkgs.inputs.nixpkgs.follows = "nixpkgs";
 };
@@ -21,9 +24,9 @@ outputs = { self, nixpkgs, home-manager, ... }@inputs:
 let
   alib = nixpkgs.lib // home-manager.lib // inputs.nypkgs.lib."x86_64-linux";
   patt = {
-    username = "YOUR_USERNAME";
-    email = "your@email.provider";
-  };
+    username = "hver";
+    email = "hver.vef@gmail.com";
+    };
 in {
 
   homeConfigurations = { #==<< User home manager >>==========================>
