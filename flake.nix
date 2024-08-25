@@ -24,9 +24,9 @@ outputs = { self, nixpkgs, home-manager, ... }@inputs:
 let
   alib = nixpkgs.lib // home-manager.lib // inputs.nypkgs.lib."x86_64-linux";
   patt = {
-    username = "hver";
-    email = "hver.vef@gmail.com";
-    };
+    username = "username";
+    email = "your@email.provider";
+  };
 in {
 
   homeConfigurations = { #==<< User home manager >>==========================>

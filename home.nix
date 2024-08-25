@@ -105,10 +105,10 @@ in
     #   recursive = true;
     # };
 
-    ".config/niri/config.kdl" = {
-      source = config.lib.file.mkOutOfStoreSymlink "/home/${username}/Home/other/config.kdl";
-      recursive = true;
-    }; 
+    # ".config/niri/config.kdl" = {
+    #   source = config.lib.file.mkOutOfStoreSymlink "/home/${username}/Home/other/config.kdl";
+    #   recursive = true;
+    # }; 
   
   };
 };

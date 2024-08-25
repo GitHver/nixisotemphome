@@ -7,13 +7,15 @@ in {
 
   imports = [ inputs.niri.homeModules.niri ];
 
-  options.gnome-dconf.enable = mkOption {
+  options.niri.enable = mkOption {
     type = types.bool;
     default = false;
   };
 
   config = mkIf cfg.enable {
     programs.niri.enable = true;
+
+    programs.niri.config = null;
     
     programs.niri.settings = {
       inputs = {
