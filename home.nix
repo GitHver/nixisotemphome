@@ -10,7 +10,10 @@ in
   imports = umport { path = ./modules; recursive = true; };
   config = {
 
-  gnome-dconf.enable = true;
+  gnome-dconf.enable = false;
+  niri.enable = true;
+  nix-utils.enable = false;
+  rust.enable = false;
 
  #====<< Home manager settings >>==============================================>
   home.username = "${username}";
@@ -29,35 +32,32 @@ in
   # Below is where your user packages are installed.
   # Go to https://search.nixos.org/packages to search for programs.
   home.packages = with pkgs; [
-
-    pavucontrol
-    fuzzel
   
    #==<< Internet >>===================>
     firefox         # Fiwefwox! or
     #librewolf       # Pre hardened Firefox or
     #floorp          # A beautiful Firefox Fork
-    tor-browser     # Anonymous web browser.
-    thunderbird     # FOSS email client.
+    #tor-browser     # Anonymous web browser.
+    #thunderbird     # FOSS email client.
     #qbittorrent     # BitTorrent client
     #signal-desktop  # Private messages.
-    webcord         # No telemetry discord  .
+    #webcord         # No telemetry discord  .
 
    #==<< Creativity >>=================>
-    obsidian        # Markdown file editor, or
+    #obsidian        # Markdown file editor, or
     #logseq          # A FOSS alternative.
-    obs-studio      # Recording software.
+    #obs-studio      # Recording software.
     #davinci-resolve # Exeptional video editing software
     #blender         # 3D rendering software.
-    libreoffice    # FOSS office suite.
+    #libreoffice    # FOSS office suite.
 
    #==<< Media >>======================>
-    vlc             # Multi media player
-    spotify         # Music streaming service
+    #vlc             # Multi media player
+    #spotify         # Music streaming service
 
    #==<< Terminal utils >>=============>
     # fish            # Thw Friendly Interactive SHell.
-    wezterm         # Rust made terminal emulator configured in lua, or
+    #wezterm         # Rust made terminal emulator configured in lua, or
     #alacritty       # Tried and tested terminal emulator.
     zellij          # User friendly terminal multiplexer, or
     #tmux            # A More known alternative,
@@ -76,7 +76,7 @@ in
     ]; })
     
    #==<< Misc >>=======================>
-    wineWowPackages.stable  # Windows executable (.exe) translator
+    #wineWowPackages.stable  # Windows executable (.exe) translator
     #minecraft              # Minecraft
   ];
 
