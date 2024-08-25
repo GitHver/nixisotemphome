@@ -1,0 +1,40 @@
+theme = "gruvbox_dark_hard"
+
+[editor]
+line-number = "relative"
+scrolloff = 4
+bufferline = "always"
+
+[editor.statusline]
+left = [
+  "mode",
+  "spinner",
+  "file-name",
+  "read-only-indicator",
+  "file-modification-indicator",
+]
+center = [
+  #"separator",
+]
+right = [
+  "diagnostics",
+  "selections",
+  "register",
+  "position",
+  "file-encoding",
+]
+separator = "|"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+[editor.cursor-shape]
+normal = "block"
+insert = "bar"
+select = "underline"
+
+[editor.smart-tab]
+enable = false
+
+[keys.normal]
+C-g = [ ":new", ":insert-output gitui", ":buffer-close!", ":redraw" ]

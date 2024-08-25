@@ -1,0 +1,7 @@
+[manager]
+ratio = [1, 2, 5]
+
+[opener]
+edit = [
+	{ run = 'hx "$@"', desc = "$EDITOR", block = true, for = "unix" }
+]
