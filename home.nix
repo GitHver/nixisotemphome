@@ -10,10 +10,11 @@ in
   imports = umport { path = ./modules; recursive = true; };
   config = {
 
-  gnome-dconf.enable = false;
+  gnome-dconf.enable = true;
   niri.enable = true;
-  nix-utils.enable = false;
-  rust.enable = false;
+  hyprland.enable = true;
+  nix-utils.enable = true;
+  rust.enable = true;
 
  #====<< Home manager settings >>==============================================>
   home.username = "${username}";
@@ -33,6 +34,7 @@ in
   # Go to https://search.nixos.org/packages to search for programs.
   home.packages = with pkgs; [
   
+    gnome-disk-utility
    #==<< Internet >>===================>
     firefox         # Fiwefwox! or
     #librewolf       # Pre hardened Firefox or

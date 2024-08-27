@@ -15,15 +15,15 @@ in {
   config = mkIf cfg.enable {
     programs.niri.enable = true;
 
-    programs.niri.config = null;
+    #programs.niri.config = null;
     
     programs.niri.settings = {
-      inputs = {
+      input = {
         keyboard.xkb = {
-          layout  = "";
+          layout  = "is";
           model   = "";
           variant = "";
-          options = "";
+          options = "caps:escape";
           rules   = "";
         };
       };
@@ -33,7 +33,7 @@ in {
       #   };
       # };
       cursor = {
-        size = 24;
+        size = 30;
         theme = "default";
       };
       # layout.border = {
