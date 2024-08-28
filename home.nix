@@ -71,6 +71,7 @@ in
     eza       # LS but with more options ad customization.
     bat       # Better cat. Print out files in the terminal.
     starship  # Shell promt customization tool.
+    gitui
 
    #==<< Fonts >>======================>
     (nerdfonts.override { fonts = [
