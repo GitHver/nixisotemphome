@@ -28,15 +28,13 @@ in {
       xdg-desktop-portal-hyprland
       #hyprland-workspaces
       #hyprland-activewindow
-      ;
-      inherit (pkgs.hyprlandPlugins)
+      ; inherit (pkgs.hyprlandPlugins)
       #hycov
       #hyprwinwrap
       #hyprscroller
       #hyprspace
       #hyprexpo
-      ;
-    };
+    ;};
 
   };
 }

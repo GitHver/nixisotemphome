@@ -25,7 +25,7 @@ let
   alib = nixpkgs.lib // home-manager.lib // inputs.nypkgs.lib."x86_64-linux";
   patt = {
     username = "username";
-    email = "your@email.provider";
+    email    = "your@email.provider";
   };
 in {
 
