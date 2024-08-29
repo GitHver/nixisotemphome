@@ -7,7 +7,7 @@ in {
 
   options.wbg.enable = mkOption {
     type = types.bool;
-    default = true;
+    default = false;
   };
 
   config = mkIf cfg.enable {
@@ -15,7 +15,7 @@ in {
       wbg
     ];
     programs.bash.profileExtra = ''
-      wbg ~/Home/assets/Miku-piku.jpg
+      wbg ~/Home-manager/assets/Miku-piku.jpg
     '';
   };
 }

@@ -19,34 +19,8 @@
       # unset __HM_SESS_VARS_SOURCED ; . .profile
     shellAliases = {
       re = "unset __HM_SESS_VARS_SOURCED ; . .profile";
-      homeswitch = ''
-        home-manager switch --flake ~/Home#admin
-        unset __HM_SESS_VARS_SOURCED ; . ~/.profile
-      '';
       yy = "yazi";
-      syy = "sudo -E yazi";
-      ssh1 = ''
-        echo '
-        copy the following and replace it with your email and then run it
-
-        ssh-keygen -t ed25519 -C "your@email.host"'
-      '';
-      ssh2 =''
-        echo '
-        copy the below and pasrte it into the next step
-    
-        Host *
-          AddKeysToAgent yes
-          IdentityFile ~/.ssh/id_ed25519'
-      '';
-      ssh3 = ''
-        touch ~/.ssh/config
-        $EDITOR ~/.ssh/config
-      '';
-      ssh4 = ''
-        ssh-add ~/.ssh/id_ed25519
-        cat ~/.ssh/id_ed25519.pub
-      '';
+      Syy = "sudo -E yazi";
     };
   };
 }
