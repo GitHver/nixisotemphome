@@ -5,7 +5,7 @@ let
   inherit (patt) username;
 in {
 
-  imports = umport { path = ./modules; recursive = true; };
+  imports = umport { path = ./../modules; recursive = true; };
   config = {
 
   #====<< Home manager settings >>=============================================>
@@ -37,9 +37,9 @@ in {
     #thunderbird     # FOSS email client.
     #qbittorrent     # BitTorrent client
     #signal-desktop  # Private messages.
-    webcord         # Less telemetry discord.
+    #webcord         # Less telemetry discord.
     #==<< Creativity >>================>
-    obsidian        # Markdown file editor, or
+    #obsidian        # Markdown file editor, or
     #logseq          # A FOSS alternative.
     #obs-studio      # Recording software.
     #davinci-resolve # Exeptional video editing software

@@ -32,7 +32,7 @@ in {
   homeConfigurations = { #==<< User home manager >>==========================>
     "${patt.username}" = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      modules = [ ./home.nix ];
+      modules = [ ./configs/home.nix ];
       extraSpecialArgs = { inherit inputs patt alib; };
     };
   };

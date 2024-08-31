@@ -19,8 +19,6 @@
       # unset __HM_SESS_VARS_SOURCED ; . .profile
     shellAliases = {
       re = "unset __HM_SESS_VARS_SOURCED ; . .profile";
-      yy = "yazi";
-      Syy = "sudo -E yazi";
     };
   };
 }
