@@ -82,7 +82,7 @@ in {
     # into dotfiles/ with no need to translate it into nix code.
     ".config" = {
       # source = config.lib.file.mkOutOfStoreSymlink "$HOME/Nixhome/dotfiles";
-      source = ./dotfiles;
+      source = ./../dotfiles;
       recursive = true;
     };
 
