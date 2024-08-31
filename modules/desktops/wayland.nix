@@ -6,7 +6,7 @@ in with lib; {
 
   options.wayland-core.enable = mkOption {
     type = types.bool;
-    default = true;
+    default = false;
   };
 
   config = mkIf cfg.enable {

@@ -13,13 +13,12 @@ in {
 
   config = mkIf cfg.enable {
 
-    home.packages = attrValues {
-      inherit (pkgs)
+    home.packages = (with pkgs; [
       hyprls
       hyprpaper
       hyprpicker
-      hyprlock
-      hypridle
+      # hyprlock
+      # hypridle
       hyprlang
       hyprkeys
       hyprutils
@@ -28,13 +27,20 @@ in {
       xdg-desktop-portal-hyprland
       #hyprland-workspaces
       #hyprland-activewindow
-      ; inherit (pkgs.hyprlandPlugins)
+    ]) ++ (with pkgs.hyprlandPlugins; [
       #hycov
       #hyprwinwrap
       #hyprscroller
       #hyprspace
       #hyprexpo
-    ;};
+    ]);
+
+    wayland.windowManager.hyprland = {
+      enable = true;
+      # plugins = with pkgs.hyprlandPlugins; [
+      #   hyprscroller
+      # ];
+    };
 
   };
 }

@@ -3,18 +3,10 @@
 let
   inherit (alib) umport;
   inherit (patt) username;
-in
-
-{ ################## Variable scope ############################################
+in {
 
   imports = umport { path = ./modules; recursive = true; };
   config = {
-
-  gnome-dconf.enable = true;
-  niri.enable = true;
-  hyprland.enable = true;
-  nix-utils.enable = true;
-  rust.enable = true;
 
   #====<< Home manager settings >>=============================================>
   home.username = "${username}";
@@ -30,10 +22,13 @@ in
 
   #====<< User Packages >>=====================================================>
   nixpkgs.config.allowUnfree = true;
+  gnome-apps.enable = true;
+  gnome-dconf.enable = false;
+  nix-utils.enable = true;
+  rust.enable = true;
   # Below is where your user packages are installed.
   # Go to https://search.nixos.org/packages to search for programs.
   home.packages = with pkgs; [
-  
     #==<< Internet >>==================>
     firefox         # Fiwefwox! or
     #librewolf       # Pre hardened Firefox or
@@ -42,42 +37,37 @@ in
     #thunderbird     # FOSS email client.
     #qbittorrent     # BitTorrent client
     #signal-desktop  # Private messages.
-    #webcord         # No telemetry discord  .
-
+    webcord         # Less telemetry discord.
     #==<< Creativity >>================>
-    #obsidian        # Markdown file editor, or
+    obsidian        # Markdown file editor, or
     #logseq          # A FOSS alternative.
     #obs-studio      # Recording software.
     #davinci-resolve # Exeptional video editing software
     #blender         # 3D rendering software.
-    #libreoffice    # FOSS office suite.
-
+    #libreoffice     # FOSS office suite.
     #==<< Media >>=====================>
     #vlc             # Multi media player
     #spotify         # Music streaming service
-
     #==<< Terminal utils >>============>
-    #wezterm         # Rust made terminal emulator configured in lua.
+    #wezterm         # Rust made terminal emulator configured in lua, or
     #alacritty       # Tried and tested terminal emulator.
     zellij          # User friendly terminal multiplexer.
     helix           # No nonsense terminal modal text editor.
-    yazi            # batterise included terminal file manager.
+    yazi            # Batterise included terminal file manager
     zoxide          # A better cd command that learns your habbits.
-    eza             # LS but with more options ad customization.
+    eza             # `ls`, but with more options and customization.
     bat             # Better cat. Print out files in the terminal.
     starship        # Shell promt customization tool.
-    gitui           #
-
+    gitui           # Terminal UI for managing git repositories.
     #==<< Fonts >>=====================>
     (nerdfonts.override { fonts = [
       "CascadiaCode"
+      #"FiraCode"
     ]; })
-    
     #==<< Misc >>======================>
     #wineWowPackages.stable  # Windows executable (.exe) translator
     #minecraft              # Minecraft
   ];
-
 
   #====<< Set user variables >>================================================>
   home.sessionVariables = {
@@ -86,13 +76,12 @@ in
   };
 
   #====<< Manage home files >>=================================================>
-  #xdg.configFile = {
   home.file = {
     # This recursively imports all files in the dotfiles directory into
     # the .config directory. With this you can move all of your dotfiles
     # into dotfiles/ with no need to translate it into nix code.
     ".config" = {
-      # source = config.lib.file.mkOutOfStoreSymlink "/home/hver/GNix/Hvernix/dotfiles";
+      # source = config.lib.file.mkOutOfStoreSymlink "$HOME/Nixhome/dotfiles";
       source = ./dotfiles;
       recursive = true;
     };
@@ -102,11 +91,6 @@ in
     #   recursive = true;
     # };
 
-    # ".config/niri/config.kdl" = {
-    #   source = config.lib.file.mkOutOfStoreSymlink "/home/${username}/Home/other/config.kdl";
-    #   recursive = true;
-    # }; 
-  
   };
 };
 

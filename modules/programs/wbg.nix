@@ -15,7 +15,7 @@ in {
       wbg
     ];
     programs.bash.profileExtra = ''
-      wbg ~/Home-manager/assets/Miku-piku.jpg
+      wbg ~/Home/assets/Miku-piku.jpg
     '';
   };
 }

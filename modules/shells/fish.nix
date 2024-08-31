@@ -24,6 +24,11 @@
 
       ga = "git add .";
       gc = "git commit";
+      gcp = ''
+        git add .
+        git commit
+        git push
+      '';
       Sga = "sudo -E git add .";
       Sgc = "sudo -E git commit";
     };
@@ -36,7 +41,7 @@
       '';
       ssh2 =''
         echo '
-        copy the below and pasrte it into the next step
+        copy the below and paste it into the next step
   
         Host *
           AddKeysToAgent yes
@@ -49,6 +54,13 @@
       ssh4 = ''
         ssh-add ~/.ssh/id_ed25519
         cat ~/.ssh/id_ed25519.pub
+      '';
+      ssh-perms = ''
+        chmod 644 ~/.ssh/config
+        chmod 644 ~/.ssh/known_hosts.old
+        chmod 644 ~/.ssh/id_ed25519.pub
+        chmod 600 ~/.ssh/know_hosts
+        chmod 600 ~/.ssh/id_ed25519
       '';
     };
   };
