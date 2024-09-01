@@ -18,7 +18,6 @@
       s = "sudo";
       S = "sudo -E";
       yy = "yazi";
-      Syy = "sudo -E yazi";
       el = "eza -la";
       zn = "z /etc/nixos";
       zh = "z ~/.config/home-manager";
@@ -28,26 +27,39 @@
       nrb  = "sudo nixos-rebuild build";
       nrbt = "sudo nixos-rebuild boot";
       nrt  = "sudo nixos-rebuild test";
+      # nix flake update system
+      nfus = "nix flake update /etc/nixos";
+      # nixos-rebuild update
+      nru  = ''
+        nix flake update /etc/nixos
+        sudo nixos-rebuild switch
+      '';
       #==<< Home-manager abbrs >>======>
       hms  = "home-manager switch";
       hmb  = "home-manager build";
       hmg  = "home-manager generations";
       hmxg = "home-manager expire-generations 1d";
       hmrg = "home-manager remove-generations";
+      # nix flake update home
+      nfuh = "nix flake update ~/.config/home-manager";
+      # home-manager update
+      hmu  = ''
+        nix flake update ~/.config/home-manager
+        home-manager switch
+      '';
+      #==<< Nix misc abbr >>===========>
+      ncg = "sudo nix-collect-garbage --delete-older-than";
+      nsgc = "nix store gc";
       #==<< Git abbriviations >>=======>
       ga = "git add .";
-      gc = "git commit";
-      gcp = ''
+      gc = ''
+        git add .
+        git commit
+      '';
+      gp = ''
         git add .
         git commit
         git push
-      '';
-      Sga = "sudo -E git add .";
-      Sgc = "sudo -E git commit";
-      Sgcp = ''
-        sudo -E git add .
-        sudo -E git commit
-        sudo -E git push
       '';
     };
     shellAliases = {
@@ -80,6 +92,12 @@
         chmod 644 ~/.ssh/id_ed25519.pub
         chmod 600 ~/.ssh/know_hosts
         chmod 600 ~/.ssh/id_ed25519
+      '';
+      nix-perms = ''
+        sudo chmod -R 777 /etc/nixos
+        git init
+        git add .
+        git commit -m 'initial commit'
       '';
     };
   };
