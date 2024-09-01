@@ -6,7 +6,7 @@
 
 let
   inherit (lib) mkOption mkIf types;
-  name = "gnome-apps";
+  name = "core-apps";
   cfg = config.gnome.${name};
 in {
 
