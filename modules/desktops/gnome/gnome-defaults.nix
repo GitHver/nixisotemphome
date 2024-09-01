@@ -2,7 +2,7 @@
 
 let
   inherit (lib) mkOption mkIf types;
-  name = "gnome-defaults";
+  name = "defaults";
   cfg = config.gnome.${name};
 in {
 
