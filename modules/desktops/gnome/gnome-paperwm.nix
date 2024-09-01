@@ -20,7 +20,7 @@ in {
 
     home.packages = extension;
     dconf.settings = {
-      "org/gnome/shell".enabled-extensions = builtins.listToAttrs extension.extensionUuid;
+      "org/gnome/shell".enabled-extensions = map(extension: extension.extensionUuid)extension;
       #==<< PaperWM settings >>================================================>
       "org/gnome/shell/extensions/paperwm" = {
         show-window-position-bar = false;
