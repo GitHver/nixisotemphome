@@ -23,7 +23,8 @@ in {
   #====<< User Packages >>=====================================================>
   nixpkgs.config.allowUnfree = true;
   gnome-apps.enable = true;
-  gnome-dconf.enable = false;
+  gnome-dconf.enable = true;
+  gnome-paperwm.enable = true;
   nix-utils.enable = true;
   rust.enable = true;
   # Below is where your user packages are installed.

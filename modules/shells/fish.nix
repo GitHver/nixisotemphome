@@ -98,7 +98,7 @@
       nix-perms = ''
         sudo chown -R $USER /etc/nixos
         chmod -R 777 /etc/nixos
-        cd /ect/nixos
+        cd /etc/nixos
         git init
         git add .
         git commit -m 'initial commit'
