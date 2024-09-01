@@ -48,9 +48,11 @@
         home-manager switch
       '';
       #==<< Nix misc abbr >>===========>
-      ncg = "sudo nix-collect-garbage --delete-older-than";
+      ncg  = "sudo nix-collect-garbage --delete-older-than";
       nsgc = "nix store gc";
+      nso  = "nix store optimise";
       #==<< Git abbriviations >>=======>
+      gu = "gitui";
       ga = "git add .";
       gc = ''
         git add .
@@ -94,7 +96,9 @@
         chmod 600 ~/.ssh/id_ed25519
       '';
       nix-perms = ''
-        sudo chmod -R 777 /etc/nixos
+        sudo chown -R $USER /etc/nixos
+        chmod -R 777 /etc/nixos
+        cd /ect/nixos
         git init
         git add .
         git commit -m 'initial commit'
