@@ -9,7 +9,7 @@ in {
   config = {
 
   #====<< Home manager settings >>=============================================>
-  home.username = "${username}";
+  home.username = username;
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "24.05";
   programs.home-manager.enable = true;
@@ -20,15 +20,23 @@ in {
   fonts.fontconfig.enable = true;
   systemd.user.startServices = "sd-switch";
 
-  #====<< User Packages >>=====================================================>
-  nixpkgs.config.allowUnfree = true;
-  gnome-apps.enable = true;
-  gnome-dconf.enable = true;
-  gnome-paperwm.enable = true;
+  #====<< Gnome options >>=====================================================>
+  gnome = {
+    core-apps.enable = true;
+    defaults.enable = true;
+    paperwm.enable = true;
+    dash-to-dock.enable = true;
+    blur-my-shell.enable = true;
+  };
+
+  #====<< Utils & package bundles >>===========================================>
   nix-utils.enable = true;
   rust.enable = true;
+
+  #====<< User Packages >>=====================================================>
+  nixpkgs.config.allowUnfree = true;
   # Below is where your user packages are installed.
-  # Go to https://search.nixos.org/packages to search for programs.
+  # Go to https://search.nixos.org/packages to search for packages & programs.
   home.packages = with pkgs; [
     #==<< Internet >>==================>
     firefox         # Fiwefwox! or
@@ -50,8 +58,6 @@ in {
     #vlc             # Multi media player
     #spotify         # Music streaming service
     #==<< Terminal utils >>============>
-    #wezterm         # Rust made terminal emulator configured in lua, or
-    #alacritty       # Tried and tested terminal emulator.
     zellij          # User friendly terminal multiplexer.
     helix           # No nonsense terminal modal text editor.
     yazi            # Batterise included terminal file manager
@@ -66,6 +72,8 @@ in {
       #"FiraCode"
     ]; })
     #==<< Misc >>======================>
+    #wezterm         # Rust made terminal emulator configured in lua, or
+    #alacritty       # Tried and tested terminal emulator.
     #wineWowPackages.stable  # Windows executable (.exe) translator
     #minecraft              # Minecraft
   ];
@@ -86,13 +94,8 @@ in {
       source = ./../dotfiles;
       recursive = true;
     };
-
-    # ".mozilla/firefox/${profile}" = {
-    #   source = ./other/firefox;
-    #   recursive = true;
-    # };
-
   };
+
 };
 
 }

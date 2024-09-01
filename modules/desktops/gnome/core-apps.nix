@@ -7,10 +7,10 @@
 let
   inherit (lib) mkOption mkIf types;
   name = "gnome-apps";
-  cfg = config.${name};
+  cfg = config.gnome.${name};
 in {
 
-  options.${name}.enable = mkOption {
+  options.gnome.${name}.enable = mkOption {
     type = types.bool;
     default = false;
   };

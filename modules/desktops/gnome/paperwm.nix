@@ -6,12 +6,12 @@
 
 let
   inherit (lib) mkOption mkIf types;
-  name = "gnome-paperwm";
-  cfg = config.${name};
+  name = "paperwm";
+  cfg = config.gnome.${name};
   extension = (with pkgs.gnomeExtensions; [ paperwm ]);
 in {
 
-  options.${name}.enable = mkOption {
+  options.gnome.${name}.enable = mkOption {
     type = types.bool;
     default = false;
   };
@@ -20,7 +20,7 @@ in {
 
     home.packages = extension;
     dconf.settings = {
-      "org/gnome/shell".enabled-extensions = map(extension: extension.extensionUuid)extension;
+      "org/gnome/shell".enabled-extensions = map(f: f.extensionUuid)extension;
       #==<< PaperWM settings >>================================================>
       "org/gnome/shell/extensions/paperwm" = {
         show-window-position-bar = false;
