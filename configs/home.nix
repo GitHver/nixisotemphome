@@ -21,13 +21,13 @@ in {
   systemd.user.startServices = "sd-switch";
 
   #====<< Gnome options >>=====================================================>
-  gnome = {
-    core-apps.enable = true;
-    defaults.enable = true;
-    paperwm.enable = true;
-    dash-to-dock.enable = true;
-    blur-my-shell.enable = true;
-  };
+  # gnome = {
+  #   core-apps.enable = true;
+  #   defaults.enable = true;
+  #   paperwm.enable = true;
+  #   dash-to-dock.enable = true;
+  #   blur-my-shell.enable = true;
+  # };
   niri.enable = true;
   wayland-core.enable = true;
 
