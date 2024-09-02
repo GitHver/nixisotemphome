@@ -28,7 +28,7 @@ builtin_box_drawing = true
 
 [font.normal]
 family = "Cascadia Code"
-style  = "Normal"
+style  = "Regular"
 # bold =
 # { family = "Cascadia Code"
 # , style  = "Bold" }
