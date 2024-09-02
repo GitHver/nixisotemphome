@@ -24,23 +24,24 @@ history = 10000
 multiplier = 3
 
 [font]
-normal =
-{ family = "Cascadia Code"
-, style  = "Normal" }
-bold =
-{ family = "Cascadia Code"
-, style  = "Bold" }
-italic = 
-{ family = "Cascadia Code"
-, style  = "Italic" }
-bold_italic = 
-{ family = "Cascadia Code"
-, style  = "Bold Italic" }
-size = 11.25
-offset = 
-{ x = 0
-, y = 0 }
 builtin_box_drawing = true
+
+[font.normal]
+family = "Cascadia Code"
+style  = "Normal"
+# bold =
+# { family = "Cascadia Code"
+# , style  = "Bold" }
+# italic = 
+# { family = "Cascadia Code"
+# , style  = "Italic" }
+# bold_italic = 
+# { family = "Cascadia Code"
+# , style  = "Bold Italic" }
+# size = 11.25
+# offset = 
+# { x = 0
+# , y = 0 }
 
 [colors.normal]
 black   = "#242424"
