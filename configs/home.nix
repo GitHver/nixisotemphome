@@ -30,6 +30,7 @@ in {
   # };
   niri.enable = true;
   wayland-core.enable = true;
+  wbg.enable = true;
 
   #====<< Utils & package bundles >>===========================================>
   nix-utils.enable = true;
