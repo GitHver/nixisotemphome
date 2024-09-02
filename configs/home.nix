@@ -31,6 +31,10 @@ in {
   niri.enable = true;
   wayland-core.enable = true;
   wbg.enable = true;
+  programs.eww = {
+    enable = true;
+    configDir = ./../assets/eww;
+  };
 
   #====<< Utils & package bundles >>===========================================>
   nix-utils.enable = true;

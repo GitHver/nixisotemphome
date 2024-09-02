@@ -20,10 +20,10 @@ in {
     programs.niri.settings = {
       input = {
         keyboard.xkb = {
-          # layout  = "is";
+          layout  = "is";
           model   = "";
           variant = "";
-          # options = "caps:escape";
+          options = "caps:escape";
           rules   = "";
         };
       };
