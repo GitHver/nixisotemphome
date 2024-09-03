@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     fish
+    nom
   ];
 
   programs.fish = {
@@ -14,6 +15,9 @@
       starship init fish | source
       zoxide init fish | source
     ''; # eval (zellij setup --generate-auto-start fish | string collect)
+    interactiveShellInit = ''
+      ${pkgs.nix-your-shell}/bin/nix-your-shell --nom fish | source
+    '';
     shellAbbrs = {
       s = "sudo";
       S = "sudo -E";
@@ -48,6 +52,7 @@
         home-manager switch
       '';
       #==<< Nix misc abbr >>===========>
+      nsh  = "nix shell nixpkgs#";
       ncg  = "sudo nix-collect-garbage --delete-older-than";
       nsgc = "nix store gc";
       nso  = "nix store optimise";
