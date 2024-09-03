@@ -28,8 +28,8 @@ in {
   #   dash-to-dock.enable = true;
   #   blur-my-shell.enable = true;
   # };
-  # niri.enable = true;
-  # wayland-core.enable = true;
+  niri.enable = true;
+  wayland-core.enable = true;
   # wbg.enable = true;
   # programs.eww = {
   #   enable = true;
