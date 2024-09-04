@@ -1,27 +1,33 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
+  home.packages = (with pkgs; [
+    wbg
     fish
-    nom
-  ];
-
+  ]);
+  programs.bash.enable = true;
+  programs.bash.initExtra = ''
+    if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
+    then
+      shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+      exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+    fi
+  '';
   programs.fish = {
     enable = true;
-    shellInitLast = ''
+    loginShellInit = ''
+      wbg ~/.config/home-manager/assets/astronaut-gruvbox.jpg
+    '';
+    interactiveShellInit = ''
+      ${pkgs.nix-your-shell}/bin/nix-your-shell fish | source
       function fish_greeting
           echo Greetings $USER! The time is: (set_color yellow; date +%T; set_color normal)
       end
-      starship init fish | source
-      zoxide init fish | source
-    ''; # eval (zellij setup --generate-auto-start fish | string collect)
-    interactiveShellInit = ''
-      ${pkgs.nix-your-shell}/bin/nix-your-shell --nom fish | source
     '';
     shellAbbrs = {
       s = "sudo";
       S = "sudo -E";
-      yy = "yazi";
+      yz = "yazi";
       el = "eza -la";
       zn = "z /etc/nixos";
       zh = "z ~/.config/home-manager";
@@ -97,7 +103,7 @@
         chmod 644 ~/.ssh/config
         chmod 644 ~/.ssh/known_hosts.old
         chmod 644 ~/.ssh/id_ed25519.pub
-        chmod 600 ~/.ssh/know_hosts
+        chmod 600 ~/.ssh/known_hosts
         chmod 600 ~/.ssh/id_ed25519
       '';
       nix-perms = ''
@@ -111,11 +117,15 @@
     };
   };
 
-  # programs.zoxide.enableFishIntegration = true;
-  # programs.zellij.enableFishIntegration = true;
-  # programs.starship.enableFishIntegration = true;
+  programs.zoxide.enable = true;
+  programs.zoxide.enableFishIntegration = true;
+
+  programs.starship.enable = true;
+  programs.starship.enableFishIntegration = true;
+  # programs.starship.enableTransience = true;
   # programs.fzf.enableFishIntegration = true;
   # programs.eza.enableFishIntegration = true;
-  # programs.yazi.enableFishIntegration = true;
+  programs.yazi.enable = true;
+  programs.yazi.enableFishIntegration = true;
   
 }
