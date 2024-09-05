@@ -26,9 +26,9 @@ multiplier = 3
 [font]
 builtin_box_drawing = true
 
-[font.normal]
-family = "Cascadia Code"
-style  = "Regular"
+# [font.normal]
+# family = "Cascadia Code"
+# style  = "Regular"
 # bold =
 # { family = "Cascadia Code"
 # , style  = "Bold" }
@@ -53,10 +53,10 @@ magenta = "#B16286"
 cyan    = "#689D6A"
 white   = "#E7D7AD"
 
-[cursor]
-style = 
-{ shape = "Block"
-, blinking = "On" }
+# [cursor]
+# style = 
+# { shape = "Block"
+# , blinking = "On" }
 
 [mouse]
 hide_when_typing = false

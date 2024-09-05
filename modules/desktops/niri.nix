@@ -13,11 +13,19 @@ in {
   };
 
   config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      waybar
+      wbg
+      fuzzel
+      pavucontrol
+    ];
     programs.niri.enable = true;
-
-    #programs.niri.config = null;
-    
     programs.niri.settings = {
+      spawn-at-startup = [
+        {command = ["alacritty"];}
+        {command = ["waybar"];}
+        {command = ["wbg" "/home/your-username/.config/home-manager/assets/astronaut-gruvbox.jpg"];}
+      ];
       input = {
         keyboard.xkb = {
           layout  = "is";
@@ -57,6 +65,9 @@ in {
         "XF86AudioLowerVolume".action.spawn = [ "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-" ];
         "XF86AudioMute".action.spawn        = [ "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle" ];
         "XF86AudioMicMute".action.spawn     = [ "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle" ];
+        # Brightness
+        "XF86MonBrightnessUp".action.spawn   = [ "sh" "-c" "brightnessctl set 10%+" ];
+        "XF86MonBrightnessDown".action.spawn = [ "sh" "-c" "brightnessctl set 10%-" ];
         # Programs
         "Mod+D".action.spawn = "fuzzel";
         "Mod+T".action.spawn = "alacritty";

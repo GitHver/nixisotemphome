@@ -7,7 +7,7 @@ description =''
 inputs = {
 
   nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  stable.url  = "github:nixos/nixpkgs/nixos-24.05";
+  nixpkgs-stable.url  = "github:nixos/nixpkgs/nixos-24.05";
 
   home-manager.url = "github:nix-community/home-manager";
   home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -32,7 +32,9 @@ in {
   homeConfigurations = { #==<< User home manager >>==========================>
     "${patt.username}" = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      modules = [ ./configs/home.nix ];
+      modules = [ ./home.nix ] ++ alib.umport { 
+        path = ./modules;
+        recursive = true; };
       extraSpecialArgs = { inherit inputs patt alib; };
     };
   };

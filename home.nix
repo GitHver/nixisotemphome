@@ -1,12 +1,8 @@
 { config, pkgs, patt, alib, ... }:
 
 let
-  inherit (alib) umport;
   inherit (patt) username;
-in {
-
-  imports = umport { path = ./../modules; recursive = true; };
-  config = {
+in { config = {
 
   #====<< Home manager settings >>=============================================>
   home.username = username;
@@ -21,20 +17,14 @@ in {
   systemd.user.startServices = "sd-switch";
 
   #====<< Gnome options >>=====================================================>
-  # gnome = {
-  #   core-apps.enable = true;
-  #   defaults.enable = true;
-  #   paperwm.enable = true;
-  #   dash-to-dock.enable = true;
-  #   blur-my-shell.enable = true;
-  # };
   niri.enable = true;
-  wayland-core.enable = true;
-  # wbg.enable = true;
-  # programs.eww = {
-  #   enable = true;
-  #   configDir = ./../assets/eww;
-  # };
+  gnome = {
+    core-apps.enable = true;
+    defaults.enable = true;
+    paperwm.enable = true;
+    dash-to-dock.enable = true;
+    blur-my-shell.enable = true;
+  };
 
   #====<< Utils & package bundles >>===========================================>
   nix-utils.enable = true;
@@ -53,25 +43,21 @@ in {
     #thunderbird     # FOSS email client.
     #qbittorrent     # BitTorrent client
     #signal-desktop  # Private messages.
-    #webcord         # Less telemetry discord.
+    webcord         # Less telemetry discord.
     #==<< Creativity >>================>
-    #obsidian        # Markdown file editor, or
+    obsidian        # Markdown file editor, or
     #logseq          # A FOSS alternative.
     #obs-studio      # Recording software.
     #davinci-resolve # Exeptional video editing software
     #blender         # 3D rendering software.
     #libreoffice     # FOSS office suite.
     #==<< Media >>=====================>
-    #vlc             # Multi media player
+    vlc             # Multi media player
     #spotify         # Music streaming service
     #==<< Terminal utils >>============>
-    zellij          # User friendly terminal multiplexer.
     helix           # No nonsense terminal modal text editor.
-    yazi            # Batterise included terminal file manager
-    zoxide          # A better cd command that learns your habbits.
-    eza             # `ls`, but with more options and customization.
+    eza             # `ls`, but with more options and colours.
     bat             # Better cat. Print out files in the terminal.
-    starship        # Shell promt customization tool.
     gitui           # Terminal UI for managing git repositories.
     #==<< Fonts >>=====================>
     (nerdfonts.override { fonts = [
@@ -79,8 +65,8 @@ in {
       #"FiraCode"
     ]; })
     #==<< Misc >>======================>
-    #wezterm         # Rust made terminal emulator configured in lua, or
-    #alacritty       # Tried and tested terminal emulator.
+    # wezterm         # Rust made terminal emulator configured in lua, or
+    # alacritty       # Tried and tested terminal emulator.
     #wineWowPackages.stable  # Windows executable (.exe) translator
     #minecraft              # Minecraft
   ];
@@ -98,11 +84,13 @@ in {
     # into dotfiles/ with no need to translate it into nix code.
     ".config" = {
       # source = config.lib.file.mkOutOfStoreSymlink "$HOME/Nixhome/dotfiles";
-      source = ./../dotfiles;
+      source = ./dotfiles;
       recursive = true;
     };
   };
 
-};
-
-}
+};}
+    # yazi            # Batterise included terminal file manager
+    # zoxide          # A better cd command that learns your habbits.
+    # zellij          # User friendly terminal multiplexer.
+    # starship        # Shell promt customization tool.

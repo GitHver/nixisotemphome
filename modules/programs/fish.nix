@@ -1,12 +1,11 @@
 { pkgs, ... }:
 
 {
-  home.packages = (with pkgs; [
-    wbg
-    fish
-  ]);
+  # home.packages = (with pkgs; [
+  #   fish
+  # ]);
   programs.bash.enable = true;
-  programs.bash.initExtra = ''
+  programs.bash.initExtra = /*bash*/''
     if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
     then
       shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
@@ -15,9 +14,6 @@
   '';
   programs.fish = {
     enable = true;
-    loginShellInit = ''
-      wbg ~/.config/home-manager/assets/astronaut-gruvbox.jpg
-    '';
     interactiveShellInit = ''
       ${pkgs.nix-your-shell}/bin/nix-your-shell fish | source
       function fish_greeting
@@ -28,7 +24,10 @@
       s = "sudo";
       S = "sudo -E";
       yz = "yazi";
-      el = "eza -la";
+      el = "eza -l";
+      ela = "eza -la";
+      elt = "eza -lTs tyoe";
+      elat = "eza -laTs type";
       zn = "z /etc/nixos";
       zh = "z ~/.config/home-manager";
       #==<< NixOS abbriviations >>=====>
