@@ -1,6 +1,7 @@
-{pkgs, lib, config, inputs, ... }:
+{pkgs, lib, config, inputs, patt, ... }:
 
 let
+  inherit (patt) username;
   inherit (lib) mkOption mkIf types;
   cfg = config.niri;
 in {
@@ -22,9 +23,9 @@ in {
     programs.niri.enable = true;
     programs.niri.settings = {
       spawn-at-startup = [
-        {command = ["alacritty"];}
+        # {command = ["alacritty"];}
         {command = ["waybar"];}
-        {command = ["wbg" "/home/your-username/.config/home-manager/assets/astronaut-gruvbox.jpg"];}
+        {command = ["wbg" "/home/${username}/.config/home-manager/assets/astronaut-gruvbox.jpg"];}
       ];
       input = {
         keyboard.xkb = {
@@ -56,9 +57,12 @@ in {
       # animations = {
         
       # };
-      # window-rules = {
-        
-      # };
+      window-rules = [
+        {
+          matches = [{app-id = "^wezterm$"; }];
+          default-column-width = {};
+        }
+      ];
       binds = with config.lib.niri.actions; {
         # Audio
         "XF86AudioRaiseVolume".action.spawn = [ "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+" ];
@@ -70,7 +74,7 @@ in {
         "XF86MonBrightnessDown".action.spawn = [ "sh" "-c" "brightnessctl set 10%-" ];
         # Programs
         "Mod+D".action.spawn = "fuzzel";
-        "Mod+T".action.spawn = "alacritty";
+        "Mod+T".action.spawn = "wezterm";
         # Window navigation
         "Mod+H".action = focus-column-left-or-last;
         "Mod+J".action = focus-window-or-workspace-down;

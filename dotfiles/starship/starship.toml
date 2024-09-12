@@ -1,0 +1,73 @@
+
+add_newline = true
+command_timeout = 2000
+
+format = """$env_var$username$os$hostname$directory$git_branch$git_status$cmd_duration
+$character
+"""
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+# [env_var]
+# symbol = "╭╴"
+# variable = 'SHELL'
+# format = "$symbol"
+# disabled = false
+
+[os]
+format = '[$symbol](bold white) '   
+disabled = false
+
+[os.symbols]
+NixOS = ' '
+Unknown = '󰠥'
+
+# ---y
+
+# Shows the username
+[username]
+style_user = 'yellow bold'
+style_root = 'red bold'
+format = '[$user](bold green) ' # 2883ff
+disabled = false
+show_always = true
+
+# Shows the hostname
+[hostname]
+ssh_only = false
+format = '[$hostname](bold cyan) '
+disabled = false
+
+# Shows current directory
+[directory]
+truncation_length = 0
+truncation_symbol = '…/'
+home_symbol = '~'
+read_only_style = '197'
+read_only = '  '
+format = '[=> ](bold white)[$path](bold blue)[$read_only]($read_only_style) '
+style = '#7ed1fb' # yellow bold
+
+[git_branch]
+format = '[$symbol](bold white)[$branch(:$remote_branch)]($style) '
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+conflicted = '='
+ahead = '⇡'
+behind = '⇣'
+diverged = ''
+up_to_date = ''
+untracked = '?'
+stashed = '$'
+modified = '!'
+staged = '+'
+renamed = '»'
+deleted = '✘'
+typechanged = ""
+style = 'bold red'
+
+[cmd_duration]
+format = '󱦟 [$duration](bold yellow) '

@@ -19,6 +19,7 @@ in {
       clippy
       rustfmt
       #rustcli
+      gcc
     ];
   };
 }
