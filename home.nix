@@ -17,18 +17,18 @@ in { config = {
   systemd.user.startServices = "sd-switch";
 
   #====<< Gnome options >>=====================================================>
-  niri.enable = true;
+  # niri.enable = true;
   gnome = {
     core-apps.enable = true;
-    # defaults.enable = true;
-    # paperwm.enable = true;
-    # dash-to-dock.enable = true;
-    # blur-my-shell.enable = true;
+    defaults.enable = true;
+    paperwm.enable = true;
+    dash-to-dock.enable = true;
+    blur-my-shell.enable = true;
   };
 
   #====<< Utils & package bundles >>===========================================>
   nix-utils.enable = true;
-  rust.enable = true;
+  # rust.enable = true;
 
   #====<< User Packages >>=====================================================>
   nixpkgs.config.allowUnfree = true;
