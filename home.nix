@@ -1,4 +1,4 @@
-{ config, pkgs, patt, alib, ... }:
+{ pkgs, patt, lib, ... }:
 
 let
   inherit (patt) username;
@@ -43,16 +43,17 @@ in { config = {
     thunderbird     # FOSS email client.
     # qbittorrent     # BitTorrent client
     # signal-desktop  # Private messages.
-    # webcord         # Less telemetry discord.
+    webcord         # Less telemetry discord.
     #==<< Creativity >>================>
-    # obsidian        # Markdown file editor, or
+    obsidian        # Markdown file editor, or
     # logseq          # A FOSS alternative.
     # obs-studio      # Recording software.
     # davinci-resolve # Exeptional video editing software
     # blender         # 3D rendering software.
     libreoffice     # FOSS office suite.
     #==<< Media >>=====================>
-    vlc             # Multi media player
+    mpv               # multi media player
+    yt-dlp            # Tool to download media. supports many websites
     # spotify         # Music streaming service
     #==<< Terminal utils >>============>
     helix           # No nonsense terminal modal text editor.
@@ -95,6 +96,7 @@ in { config = {
       recursive = true;
     };
   };
+
   home.pointerCursor = {
     package = pkgs.capitaine-cursors;
     name = "capitaine-cursors";

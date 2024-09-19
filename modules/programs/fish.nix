@@ -2,7 +2,7 @@
 
 {
   programs.bash.enable = true;
-  programs.bash.initExtra = /*bash*/''
+  programs.bash.initExtra = ''
     unset __HM_SESS_VARS_SOURCED ; . .profile
     if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
     then
@@ -12,11 +12,62 @@
   '';
   programs.fish = {
     enable = true;
-    interactiveShellInit = ''
+    interactiveShellInit = /*fish*/''
       ${pkgs.nix-your-shell}/bin/nix-your-shell fish | source
       function fish_greeting
           echo Greetings $USER! The time is: (set_color yellow; date +%T; set_color normal)
       end
+
+      # makes nixos-rebuild an home-manager available in the nix command
+      function nix
+          if [ "$argv[1]" = "os" ]
+              if [ "$argv[2]" = "rollback" ]
+                  command sudo nixos-rebuild --rollback switch
+              else if [ "$argv[2]" = "upgrade" ]
+                  command sudo nixos-rebuild --recreate-lock-file switch
+              else
+                  command sudo nixos-rebuild $argv[2..-1] #&| nom
+              end
+          else if [ "$argv[1]" = "home" ]
+              if [ "$argv[2]" = "upgrade" ]
+                  command nix flake update ~/.config/home-manager
+                  command home-manager switch
+              else
+                  command home-manager $argv[2..-1] #&| nom
+              end
+          else
+              command nix $argv
+          end
+      end
+
+      # completions for nix command to include 'os' & 'home'
+      function __fish_nix_needs_command
+        set cmd (commandline -opc)
+        if [ (count $cmd) -eq 1 -a $cmd[1] = 'nix' ]
+          return 0
+        end
+        return 1
+      end
+
+      function __fish_nix_using_command
+        set cmd (commandline -opc)
+        if [ (count $cmd) -gt 1 ]
+          if [ $argv[1] = $cmd[2] ]
+            return 0
+          end
+        end
+        return 1
+      end
+
+      complete -f -c nix -n '__fish_nix_needs_command' -a home
+      complete -f -c nix -n '__fish_nix_using_command home' -a '
+          build switch generations expire-generations remove-generations
+          help news option packages instantiate upgrade'
+
+      complete -f -c nix -n '__fish_nix_needs_command' -a os
+      complete -f -c nix -n '__fish_nix_using_command os' -a '
+          build boot build-vm build-vm-with-bootloader test switch
+          dry-build dry-activate repl rollback list-generations upgrade'
     '';
     shellAbbrs = {
       s = "sudo";
@@ -24,43 +75,37 @@
       yz = "yazi";
       el = "eza -l";
       ela = "eza -la";
-      elt = "eza -lTs tyoe";
+      elt = "eza -lTs type";
       elat = "eza -laTs type";
       zn = "z /etc/nixos";
       zh = "z ~/.config/home-manager";
       #==<< NixOS abbriviations >>=====>
-      nrs  = "sudo nixos-rebuild switch";
-      nrr  = "sudo nixos-rebuild --rollback switch";
-      nrb  = "sudo nixos-rebuild build";
-      nrbt = "sudo nixos-rebuild boot";
-      nrt  = "sudo nixos-rebuild test";
+      nos  = "nix os switch";
+      nor  = "nix os rollback";
+      nob  = "nix os build";
+      nobt = "nix os boot";
+      not  = "nix os test";
       # nix flake update system
       nfus = "nix flake update /etc/nixos";
-      # nixos-rebuild update
-      nru  = ''
-        nix flake update /etc/nixos
-        sudo nixos-rebuild switch
-      '';
+      nou  = "nix os upgrade";
       #==<< Home-manager abbrs >>======>
-      hms  = "home-manager switch";
-      hmb  = "home-manager build";
-      hmg  = "home-manager generations";
-      hmxg = "home-manager expire-generations 1d";
-      hmrg = "home-manager remove-generations";
+      nhs  = "nix home switch";
+      nhb  = "nix home build";
+      nhg  = "nix home generations";
+      nhxg = "nix home expire-generations 1d";
+      nhrg = "nix home remove-generations";
       # nix flake update home
       nfuh = "nix flake update ~/.config/home-manager";
-      # home-manager update
-      hmu  = ''
-        nix flake update ~/.config/home-manager
-        home-manager switch
-      '';
+      nhu  = "nix home upgrade";
       #==<< Nix misc abbr >>===========>
       nsh  = "nix shell nixpkgs#";
-      ncg  = "sudo nix-collect-garbage --delete-older-than";
+      ncg  = "sudo nix-collect-garbage -d";
+      ncgo = "sudo nix-collect-garbage --delete-older-than";
       nsgc = "nix store gc";
       nso  = "nix store optimise";
       #==<< Git abbriviations >>=======>
-      gu = "gitui";
+      gu  = "gitui";
+      Sgu = "sudo -E gitui";
       ga = "git add .";
       gc = ''
         git add .

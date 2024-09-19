@@ -49,7 +49,7 @@ in {
         clock-show-weekday = true;
         clock-show-date = true;
         #==<< Fonts >>===================>
-        monospace-font-name = "CaskaydiaCove Nerd Font Mono Regular";
+        monospace-font-name = "FiraCode Nerd Font Mono Regular";
         font-antialiasing = "rgba";
       };
 

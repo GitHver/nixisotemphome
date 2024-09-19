@@ -1,44 +1,40 @@
 {
 
-description =''
-  This user's flake!
-'';
+  description =''
+    This user's flake!
+  '';
 
-inputs = {
+  inputs = {
 
-  nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  nixpkgs-stable.url  = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url  = "github:nixos/nixpkgs/nixos-24.05";
 
-  home-manager.url = "github:nix-community/home-manager";
-  home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-  niri.url = "github:sodiboo/niri-flake";
-  niri.inputs.nixpkgs.follows = "nixpkgs";
-
-  nypkgs.url = "github:yunfachi/nypkgs";
-  nypkgs.inputs.nixpkgs.follows = "nixpkgs";
-};
-
-outputs = { self, nixpkgs, home-manager, ... }@inputs: 
-
-let
-  alib = nixpkgs.lib // home-manager.lib // inputs.nypkgs.lib."x86_64-linux";
-  patt = {
-    username = "your-username";
-    email    = "your@email.provider";
+    # niri.url = "github:sodiboo/niri-flake";
+    # niri.inputs.nixpkgs.follows = "nixpkgs";
   };
-in {
 
-  homeConfigurations = { #==<< User home manager >>==========================>
-    "${patt.username}" = home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      modules = [ ./home.nix ] ++ alib.umport { 
-        path = ./modules;
-        recursive = true; };
-      extraSpecialArgs = { inherit inputs patt alib; };
+  outputs = inputs @ { self, nixpkgs, home-manager, ... }: let
+    lib = nixpkgs.lib // home-manager.lib;
+    inherit (lib) homeManagerConfiguration;
+    inherit (lib.filesystem) listFilesRecursive;
+    patt = {
+      username = "your-username";
+      email    = "your@email.provider";
     };
-  };
+    system = "x86_64-linux";
+  in {
+
+    homeConfigurations = { #==<< User home manager >>==========================>
+      "${patt.username}" = homeManagerConfiguration {
+        pkgs = import nixpkgs { inherit system; };
+        modules = [ ./home.nix ] ++ listFilesRecursive ./modules;
+        extraSpecialArgs = { inherit inputs lib patt; };
+      };
+    };
  
-};
+  };
 
 }
