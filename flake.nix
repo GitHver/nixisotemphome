@@ -12,8 +12,8 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # niri.url = "github:sodiboo/niri-flake";
-    # niri.inputs.nixpkgs.follows = "nixpkgs";
+    niri.url = "github:sodiboo/niri-flake";
+    niri.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ { self, nixpkgs, home-manager, ... }: let
@@ -31,7 +31,7 @@
       "${patt.username}" = homeManagerConfiguration {
         pkgs = import nixpkgs { inherit system; };
         modules = [ ./home.nix ] ++ listFilesRecursive ./modules;
-        extraSpecialArgs = { inherit inputs lib patt; };
+        extraSpecialArgs = { inherit inputs patt; };
       };
     };
  
