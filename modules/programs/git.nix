@@ -1,14 +1,14 @@
 { pkgs, patt, ... }:
 
 let
-  inherit (patt) username email;
+  inherit (patt) gitUsername gitEmail;
 in {
 
   #====<< Credentials >>=======================================================>
   programs.git = {
     enable = true;
-    userName  = username;
-    userEmail = email;
+    userName  = gitUsername;
+    userEmail = gitEmail;
   };
 
 }

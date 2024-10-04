@@ -1,6 +1,5 @@
-{ pkgs, ... }:
+{ pkgs, ... }: {
 
-{
   programs.bash.enable = true;
   programs.bash.initExtra = ''
     unset __HM_SESS_VARS_SOURCED ; . .profile
@@ -148,26 +147,16 @@
         chmod 600 ~/.ssh/known_hosts
         chmod 600 ~/.ssh/id_ed25519
       '';
-      nix-perms = ''
-        sudo chown -R $USER /etc/nixos
-        chmod -R 777 /etc/nixos
-        cd /etc/nixos
-        git init
-        git add .
-        git commit -m 'initial commit'
-      '';
     };
   };
 
-  programs.zoxide.enable = true;
-  programs.zoxide.enableFishIntegration = true;
+  # programs.zoxide.enable = true;
+  # programs.zoxide.enableFishIntegration = true;
 
-  programs.starship.enable = true;
-  programs.starship.enableFishIntegration = true;
   # programs.starship.enableTransience = true;
   # programs.fzf.enableFishIntegration = true;
   # programs.eza.enableFishIntegration = true;
-  programs.yazi.enable = true;
-  programs.yazi.enableFishIntegration = true;
+  # programs.yazi.enable = true;
+  # programs.yazi.enableFishIntegration = true;
   
 }

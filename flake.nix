@@ -20,9 +20,11 @@
     lib = nixpkgs.lib // home-manager.lib;
     inherit (lib) homeManagerConfiguration;
     inherit (lib.filesystem) listFilesRecursive;
-    patt = {
+    patt = rec {
       username = "your-username";
-      email    = "your@email.provider";
+      email    = "your@email.domain";
+      gitUsername = username;
+      gitEmail    = email;
     };
     system = "x86_64-linux";
   in {
