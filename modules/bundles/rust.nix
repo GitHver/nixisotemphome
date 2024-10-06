@@ -1,11 +1,15 @@
-{ pkgs, lib, config, ... }:
+{ pkgs
+, lib
+, config
+, ...
+}:
 
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.rust;
+  cfg = config.bundles.rust;
 in {
 
-  options.rust.enable = mkOption {
+  options.bundles.rust.enable = mkOption {
     type = types.bool;
     default = false;
   };
@@ -22,4 +26,5 @@ in {
       gcc
     ];
   };
+
 }

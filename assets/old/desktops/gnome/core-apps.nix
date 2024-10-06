@@ -18,7 +18,7 @@ in {
   config = mkIf cfg.enable {
     home.packages = (with pkgs; [
       #==<< Gnome core >>======================================================>
-      gnome-console           # (console) gnome's terminal emulator
+      # gnome-console           # (console) gnome's terminal emulator
       nautilus                # (files) file manager
       gnome-text-editor       # (text editor) a basic text editor
       gnome-system-monitor    # (system monitor) resource monitor

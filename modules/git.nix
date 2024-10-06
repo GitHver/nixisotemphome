@@ -1,4 +1,7 @@
-{ pkgs, patt, ... }:
+{ pkgs
+, patt
+, ...
+}:
 
 let
   inherit (patt) gitUsername gitEmail;

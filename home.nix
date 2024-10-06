@@ -3,19 +3,22 @@
 let
   inherit (patt) username;
   enabled = { enable = true; };
+  fishEnabled = {
+    enable = true;
+    enableFishIntegration = true;
+  };
 in { config = {
 
   #====<< Utils & package bundles >>===========================================>
-  # niri.enable = true;
-  gnome.core-apps.enable = true;
-  nix-utils.enable = true;
-  rust.enable = true;
-  terminal = {
-    zoxide.enable = true;
-    yazi.enable = true;
-    wezterm.enable = true;  # Rust made terminal emulator configured in lua
-    helix.enable = true;    # No nonsense terminal modal text editor.
-    starship.enable = true;
+  bundles = {
+    rust = enabled;
+    nix-utils = enabled;
+  };
+  programs = {
+    helix = enabled;
+    zoxide = fishEnabled;
+    yazi = fishEnabled;
+    starship = fishEnabled;
   };
 
   #====<< User Packages >>=====================================================>
@@ -35,7 +38,7 @@ in { config = {
     libreoffice     # FOSS office suite.
     obsidian        # Markdown file editor.
     # krita           # Digital illustration program.
-    # obs-studio      # Recording software.
+    # obs-studio      # Video capture software.
     # davinci-resolve # Exeptional video editing software
     # blender         # 3D modeling software.
     #==<< Media >>=====================>
@@ -60,21 +63,22 @@ in { config = {
 
   #====<< Set user variables >>================================================>
   home.sessionVariables = {
-    #ANY_VARIBLE = "VALUE";
+    EDITOR = "hx";
+    STARSHIP_CONFIG = "/home/${username}/.config/starship/starship.toml";
+    #ANY_VARIBLE = "ANY-VALUE";
   };
 
   #====<< Manage home files >>=================================================>
   home.file = {
     # This recursively imports all files in the dotfiles directory into
     # the .config directory. With this you can move all of your dotfiles
-    # into dotfiles/ with no need to translate it into nix code.
-    # ".config" = {
-    #   # source = config.lib.file.mkOutOfStoreSymlink "$HOME/Nixhome/dotfiles";
-    #   source = ./dotfiles;
-    #   recursive = true;
-    # };
-    ".mozilla/firefox/${username}" = {
+    # into dotfiles/ with no need to translate it into Nix code.
+    ".config" = {
       # source = config.lib.file.mkOutOfStoreSymlink "$HOME/Nixhome/dotfiles";
+      source = ./dotfiles;
+      recursive = true;
+    };
+    ".mozilla/firefox/${username}" = {
       source = ./assets/firefox;
       recursive = true;
     };
@@ -87,17 +91,3 @@ in { config = {
   };
 
 };}
-
-
-
-
-
-  # gtk.cursorTheme = {
-  #   package = pkgs.capitaine-cursors;
-  #   name = "capitaine-cursors";
-  #   size = 30;
-  # };
-  #   defaults.enable = true;
-  #   paperwm.enable = true;
-  #   dash-to-dock.enable = true;
-  #   blur-my-shell.enable = true;

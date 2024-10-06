@@ -1,11 +1,15 @@
-{ pkgs, lib, config, ... }:
+{ pkgs
+, lib
+, config
+, ...
+}:
 
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.nix-utils;
+  cfg = config.bundles.nix-utils;
 in {
 
-  options.nix-utils.enable = mkOption {
+  options.bundles.nix-utils.enable = mkOption {
     type = types.bool;
     default = false;
   };
@@ -17,10 +21,9 @@ in {
       nil
       nixdoc
       #==<< Other >>======================>
-      marksman
-      #==<< Shell scripts >>==============>
-      bash-language-server
-      nufmt
+      # marksman
+      # bash-language-server
     ];
   };
+
 }
