@@ -27,24 +27,23 @@ in { config = {
   # Go to https://search.nixos.org/packages to search for packages & programs.
   home.packages = with pkgs; [
     #==<< Internet >>==================>
-    firefox         # Fiwefwox! or
-    # librewolf       # Pre hardened Firefox.
+    firefox         # Fiwefwox!
     # tor-browser     # Anonymous web browser.
-    thunderbird     # FOSS email client.
+    # thunderbird     # FOSS email client.
     # qbittorrent     # BitTorrent client.
     # signal-desktop  # Private messages.
-    webcord         # webclient discord.
+    # webcord         # webclient discord.
     #==<< Creativity >>================>
     libreoffice     # FOSS office suite.
-    obsidian        # Markdown file editor.
+    # obsidian        # Markdown file editor.
     # krita           # Digital illustration program.
     # obs-studio      # Video capture software.
-    # davinci-resolve # Exeptional video editing software
+    # kdenlive        # Exeptional video editing software.
     # blender         # 3D modeling software.
     #==<< Media >>=====================>
     mpv             # multi media player
     yt-dlp          # Tool to download media. supports many websites
-    # spotify         # Music streaming service
+    # spotify         # Music streaming service.
     #==<< Terminal utils >>============>
     zellij          # Terminal multiplexer.
     eza             # `ls`, but with more options and colours.
@@ -57,8 +56,8 @@ in { config = {
       # "CascadiaCode"
     ]; })
     #==<< Misc >>======================>
-    wineWowPackages.stable  # Windows executable (.exe) translator
-    prismlauncher           # Open source Minecraft launcher.
+    # wineWowPackages.stable  # Windows executable (.exe) translator
+    # prismlauncher           # Open source Minecraft launcher.
   ];
 
   #====<< Set user variables >>================================================>

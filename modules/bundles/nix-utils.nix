@@ -20,6 +20,7 @@ in {
       nixd
       nil
       nixdoc
+      nix-output-monitor
       #==<< Other >>======================>
       # marksman
       # bash-language-server

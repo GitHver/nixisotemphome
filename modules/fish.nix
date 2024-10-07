@@ -82,17 +82,19 @@
               if [ "$argv[2]" = "rollback" ]
                   command sudo nixos-rebuild --rollback switch
               else if [ "$argv[2]" = "upgrade" ]
-                  command sudo nix flake update /etc/nixos
-                  command sudo nixos-rebuild switch
+                  command sudo nix flake update ~/Nix/nixos-system
+                  command sudo nixos-rebuild switch #&| nom
               else
                   command sudo nixos-rebuild $argv[2..-1] #&| nom
               end
           else if [ "$argv[1]" = "home" ]
               if [ "$argv[2]" = "upgrade" ]
-                  command nix flake update ~/.config/home-manager
-                  command home-manager switch
+                  command nix flake update ~/Nix/home-manager
+                  command home-manager switch #&| nom
+              # else if [ "$argv[2]" = "switch" ]
+              #     command home-manager switch #&| nom
               else
-                  command home-manager $argv[2..-1] #&| nom
+                  command home-manager $argv[2..-1]
               end
           else
               command nix $argv
