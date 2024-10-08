@@ -2,68 +2,69 @@
 
 let
   inherit (patt) username;
-  enabled = { enable = true; };
-  fishEnabled = {
-    enable = true;
-    enableFishIntegration = true;
-  };
+  enabled  = { enable = true; };
+  disabled = { enable = false; };
 in { config = {
 
   #====<< Utils & package bundles >>===========================================>
   bundles = {
-    rust = enabled;
     nix-utils = enabled;
-  };
-  programs = {
-    helix = enabled;
-    zoxide = fishEnabled;
-    yazi = fishEnabled;
-    starship = fishEnabled;
+    terminal-utils = enabled;
+    rust = enabled;
   };
 
   #====<< User Packages >>=====================================================>
-  nixpkgs.config.allowUnfree = true;
+  # If you want install software with non free licenses, set this to true. If
+  # you only want one or two programs, try adding them in `modules/unfree.nix`.
+  nixpkgs.config.allowUnfree = false;
   # Below is where your user packages are installed.
   # Go to https://search.nixos.org/packages to search for packages & programs.
-  home.packages = with pkgs; [
+  home.packages = (with pkgs; [
     #==<< Internet >>==================>
     firefox         # Fiwefwox!
-    tor-browser     # Anonymous web browser.
-    thunderbird     # FOSS email client.
-    qbittorrent     # qBitTorrent client.
-    signal-desktop  # Private messages.
-    webcord         # webclient discord.
+    # tor-browser     # Anonymous web browser.
+    # thunderbird     # FOSS email client.
+    # signal-desktop  # Private messages.
+    # webcord         # webclient discord.
+    # qbittorrent     # BitTorrent client.
+    # yt-dlp          # Tool to download media from the web.
     #==<< Creativity >>================>
-    libreoffice     # FOSS office suite.
-    obsidian        # Markdown file editor.
-    krita           # Digital illustration program.
-    obs-studio      # Video capture software.
-    kdenlive        # Exeptional video editing software.
-    blender         # 3D modeling software.
+    # libreoffice     # FOSS office suite.
+    # obsidian        # Markdown file editor.
+    # krita           # Digital illustration program.
+    # obs-studio      # Video capture software.
+    # kdenlive        # Exeptional video editing software.
+    # tenacity        # Mutli track audio editor/recorder.
+    # blender         # 3D modeling software.
     #==<< Media >>=====================>
-    mpv             # multi media player
-    yt-dlp          # Tool to download media. supports many websites.
-    amberol         # Simple and elegant music player.
-    #==<< Terminal utils >>============>
-    zellij          # Terminal multiplexer.
-    eza             # `ls`, but with more options and colours.
-    bat             # Better cat. Print out files in the terminal.
-    gitui           # Terminal UI for managing git repositories.
-    #==<< Fonts >>=====================>
-    # maple-mono-NF
-    (nerdfonts.override { fonts = [
-      "FiraCode"
-      # "CascadiaCode"
-    ]; })
+    # mpv             # multi media player
+    # amberol         # Simple and elegant music player.
     #==<< Misc >>======================>
-    wineWowPackages.stable  # Windows executable (.exe) translator
-    prismlauncher           # Open source Minecraft launcher.
-  ];
+    # wineWowPackages.stable  # Windows executable (.exe) translator
+    # prismlauncher           # Open source Minecraft launcher.
+  ]);
+
+  #====<< Themes & fonts >>====================================================>
+  # This allows fontconfig to detect font packages, but it does not set the as
+  # your preffered font. You'll need to open [system or app] settings and apply
+  # them yourself.
+  fonts.fontconfig.enable = true;
+  home.font = {
+    packages = (with pkgs; [
+      maple-mono-NF
+    ]);
+    nerdFonts = [
+      "FiraCode"
+    ];
+  };
+  home.pointerCursor = {
+    package = pkgs.capitaine-cursors;
+    name = "capitaine-cursors";
+    size = 30;
+  };
 
   #====<< Set user variables >>================================================>
   home.sessionVariables = {
-    EDITOR = "hx";
-    STARSHIP_CONFIG = "/home/${username}/.config/starship/starship.toml";
     #ANY_VARIBLE = "ANY-VALUE";
   };
 
@@ -81,12 +82,6 @@ in { config = {
       source = ./assets/firefox;
       recursive = true;
     };
-  };
-
-  home.pointerCursor = {
-    package = pkgs.capitaine-cursors;
-    name = "capitaine-cursors";
-    size = 30;
   };
 
 };}

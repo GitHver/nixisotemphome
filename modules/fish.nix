@@ -52,10 +52,8 @@
       #==<< Nix misc abbr >>===========>
       nfu  = "nix flake update";
       nsh  = "nix shell nixpkgs#";
-      ncg  = "nix-collect-garbage -d";
-      ncgo = "sudo nix-collect-garbage --delete-older-than";
-      nsgc = "nix store gc";
-      nso  = "nix store optimise";
+      nhgc  = "nix-collect-garbage -d";
+      nogc  = "sudo nix-collect-garbage -d";
       #==<< Git abbriviations >>=======>
       gu  = "gitui";
       ga = "git add .";
@@ -88,7 +86,9 @@
                   command sudo nixos-rebuild $argv[2..-1] #&| nom
               end
           else if [ "$argv[1]" = "home" ]
-              if [ "$argv[2]" = "upgrade" ]
+              if [ "$argv[2]" = "rollback" ]
+                  command sudo nixos-rebuild --rollback switch
+              else if [ "$argv[2]" = "upgrade" ]
                   command nix flake update ~/Nix/home-manager
                   command home-manager switch #&| nom
               # else if [ "$argv[2]" = "switch" ]
@@ -120,15 +120,16 @@
         return 1
       end
 
+      complete -f -c nix -n '__fish_nix_needs_command' -a os
+      complete -f -c nix -n '__fish_nix_using_command os' -a '
+          boot build build-vm build-vm-with-bootloader dry-activate dry-build
+          list-generations repl rollback switch test upgrade'
+
       complete -f -c nix -n '__fish_nix_needs_command' -a home
       complete -f -c nix -n '__fish_nix_using_command home' -a '
           build expire-generations generations help instantiate news option
           packages remove-generations upgrade'
 
-      complete -f -c nix -n '__fish_nix_needs_command' -a os
-      complete -f -c nix -n '__fish_nix_using_command os' -a '
-          boot build build-vm build-vm-with-bootloader dry-activate dry-build
-          list-generations repl rollback switch test upgrade'
     '';
   };
 }
