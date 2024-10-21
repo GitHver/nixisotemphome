@@ -1,0 +1,29 @@
+#! /usr/bin/env bash
+set -ueo pipefail
+
+read a
+echo "${a:-"ekkert var ritað"}"
+echo "$a"
+echo "${a:="blessaður"}"
+echo "$a"
+
+ari=(a b c d 2)
+echo "${ari[@]}"
+ari+=(e f g)
+echo "${ari[@]}"
+
+for item in "${ari[@]}"; do
+  echo "$item"
+done
+
+for n in {0..10}; do
+  echo "$n"
+done
+
+for dir in $(ls); do
+  echo "$dir"
+done
+
+for file in *.nix; do
+  echo "$file"
+done

@@ -20,7 +20,7 @@
     #====<< Required variables >>======>
     lib = nixpkgs.lib // inputs.nixisoextras.lib;
     #====<< Used functions >>==========>
-    inherit (lib) genAttrs attrsFromList;
+    inherit (lib) genAttrs attrsFromList namesOfDirsIn;
     inherit (lib.lists) flatten forEach foldl;
     inherit (lib.filesystem) listFilesRecursive;
     inherit (builtins) readDir attrNames;
@@ -33,23 +33,23 @@
       gitEmail    = email;
     };
     #====<< Other >>===================>
-    hostAttrs = attrNames (readDir ./hosts);
-    hosts = forEach hostAttrs (host: import ./hosts/${host});
+    hostnames = namesOfDirsIn ./hosts;
+    hosts = forEach hostnames (host: import ./hosts/${host});
     genForAllSystems = (funct: genAttrs supportedSystems funct);
     supportedSystems = [
       "x86_64-linux"
-      "aarch64-linux"
+      # "aarch64-linux"
     ];
   in {
 
     #====<< Home manager configurations >>=====================================>
     homeConfigurations = attrsFromList (forEach hosts (host: {
       "${patt.username}@${host.name}" = homeManagerConfiguration {
-        pkgs = import nixpkgs { system = host.system; };
+        pkgs = import nixpkgs { inherit (host) system; };
         extraSpecialArgs = { inherit inputs patt; };
         modules = [
           self.homeModules.default
-          ./home.nix
+          ./hosts/home.nix
         ];
       };
     }));

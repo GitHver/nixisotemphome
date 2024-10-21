@@ -1,0 +1,15 @@
+inherits = "base16_transparent"
+
+"variable" = "yellow"
+"variable.other.member" = "yellow"
+"constant" = "magenta"
+"constant.numeric" = "light-magenta"
+"type" = "light-red"
+"type.builtin" = "magenta"
+"keyword" = "red"
+"operator" = "magenta"
+"punctuation.special" = "light-magenta"
+
+"ui.cursor.match" = { bg = "gray" }
+"ui.bufferline.active" = { fg = "white", bg = "black", modifiers = ["bold"] }
+

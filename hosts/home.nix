@@ -4,13 +4,21 @@ let
   inherit (patt) username;
   enabled  = { enable = true; };
   disabled = { enable = false; };
+  enableBash = { enable = true; enableBashIntegration = true; };
 in { config = {
 
   #====<< Utils & package bundles >>===========================================>
-  bundles = {
-    nix-utils = enabled;
-    terminal-utils = enabled;
-    rust = enabled;
+  programs = {
+    # A "Post-modern terminal modal editor".
+    helix = enabled // { defaultEditor = true; };
+    # Terminal file manager.
+    yazi = enableBash;
+    # Customisable shell prompt.
+    starship = enableBash // { useSubDir = true; };
+    # Git terminal user interface
+    lazygit = enabled;
+    # A great shell for writing scripts
+    nushell = enabled;
   };
 
   #====<< User Packages >>=====================================================>
@@ -22,26 +30,30 @@ in { config = {
   home.packages = (with pkgs; [
     #==<< Internet >>==================>
     firefox         # Fiwefwox!
-    # tor-browser     # Anonymous web browser.
-    # thunderbird     # FOSS email client.
+    tor-browser     # Anonymous web browser.
+    thunderbird     # FOSS email client.
     # signal-desktop  # Private messages.
-    # webcord         # webclient discord.
+    webcord         # webclient discord.
     # qbittorrent     # BitTorrent client.
     # yt-dlp          # Tool to download media from the web.
     #==<< Creativity >>================>
-    # libreoffice     # FOSS office suite.
-    # obsidian        # Markdown file editor.
+    libreoffice     # FOSS office suite.
+    obsidian        # Markdown file editor.
     # krita           # Digital illustration program.
     # obs-studio      # Video capture software.
     # kdenlive        # Exeptional video editing software.
     # tenacity        # Mutli track audio editor/recorder.
     # blender         # 3D modeling software.
     #==<< Media >>=====================>
-    # mpv             # multi media player
-    # amberol         # Simple and elegant music player.
+    mpv             # multi media player
+    amberol         # Simple and elegant music player.
     #==<< Misc >>======================>
     # wineWowPackages.stable  # Windows executable (.exe) translator
-    # prismlauncher           # Open source Minecraft launcher.
+    prismlauncher           # Open source Minecraft launcher.
+    #==<< Programming >>===============>
+    nil
+    bash-language-server
+    rustup
   ]);
 
   #====<< Themes & fonts >>====================================================>
@@ -63,7 +75,21 @@ in { config = {
     size = 30;
   };
 
-  #====<< Set user variables >>================================================>
+  #====<< Shell settings >>====================================================>
+  programs.bash = {
+    enable = true;
+    blesh.enable = true;
+    shellAliases = {
+      #==<< Nix misc abbr >>===========>
+      cds = "cd ~/Nix/nixos-system";
+      cdh = "cd ~/Nix/home-manager";
+      #==<< Git abbriviations >>=======>
+      lg = "lazygit";
+      ga = "git add .";
+      gc = "git add . && git commit";
+      gp = "git add . && git commit && git push";
+    };
+  };
   home.sessionVariables = {
     #ANY_VARIBLE = "ANY-VALUE";
   };
@@ -74,12 +100,16 @@ in { config = {
     # the .config directory. With this you can move all of your dotfiles
     # into dotfiles/ with no need to translate it into Nix code.
     ".config" = {
-      # source = config.lib.file.mkOutOfStoreSymlink "$HOME/Nixhome/dotfiles";
-      source = ./dotfiles;
+      # source = config.lib.file.mkOutOfStoreSymlink "$HOME/Nix/home-manager/dotfiles";
+      source = ./../assets/dotfiles;
       recursive = true;
     };
     ".mozilla/firefox/${username}" = {
-      source = ./assets/firefox;
+      source = ./../assets/firefox;
+      recursive = true;
+    };
+    ".local/bin" = {
+      source = ./../assets/bash;
       recursive = true;
     };
   };

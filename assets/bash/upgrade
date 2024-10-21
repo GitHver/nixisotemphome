@@ -1,0 +1,20 @@
+#! /usr/bin/env bash
+set -ueo pipefail
+
+# Check if command was executed as root and assign variables accordingly
+if [ "$(id -u)" -eq 0 ]; then 
+  echo "updating the system"
+  flake="/home/hver/Nix/nixos-system"
+  command=nixos-rebuild
+elif [ "$(id -u)" -ne 0 ]; then
+  echo "updating home-manager"
+  flake="/home/hver/Nix/home-manager"
+  command=home-manager
+else # This should never happen...
+  echo "!? something went wrong..."
+  exit 1
+fi
+
+# Update the flake and then execute a rebuild
+nix flake update --flake $flake &&
+$command switch

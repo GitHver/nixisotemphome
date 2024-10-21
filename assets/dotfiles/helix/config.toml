@@ -1,4 +1,4 @@
-theme = "gruvbox_dark_hard"
+theme = "cosmic-dark"
 
 [editor]
 line-number = "relative"
@@ -44,4 +44,4 @@ select = "underline"
 enable = false
 
 [keys.normal]
-C-g = [ ":new", ":insert-output gitui", ":buffer-close!", ":redraw" ]
+C-g = [":new", ":insert-output lazygit", ":buffer-close!", ":redraw"]
