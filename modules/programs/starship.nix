@@ -10,8 +10,8 @@ let
   cfg = config.programs.starship;
 in {
 
-  options.programs.starship = {
-    useSubDir = mkEnableOption ''
+  options = {
+    programs.starship.useSubDir = mkEnableOption ''
       the use of a Starship directory in the `.config` directory instead
       of keeping the file directly under the `.config` directory
     '';

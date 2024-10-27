@@ -19,14 +19,17 @@
   outputs = inputs @ { self, nixpkgs, home-manager, ... }: let
     #====<< Required variables >>======>
     lib = nixpkgs.lib // inputs.nixisoextras.lib;
+    alib = lib;
     #====<< Used functions >>==========>
     inherit (lib) genAttrs attrsFromList namesOfDirsIn;
     inherit (lib.lists) flatten forEach foldl;
+    inherit (lib.strings) removePrefix;
     inherit (lib.filesystem) listFilesRecursive;
-    inherit (builtins) readDir attrNames;
     inherit (home-manager.lib) homeManagerConfiguration;
     #====<< Personal Attributes >>=====>
-    patt = rec {
+    pAtt = rec {
+      flakeRepo = "/home/${username}/Nix/home-manager";
+      flakePath = path: flakeRepo + removePrefix (toString self) (toString path);
       username = "your-username";
       email    = "your@email.domain";
       gitUsername = username;
@@ -34,7 +37,7 @@
     };
     #====<< Other >>===================>
     hostnames = namesOfDirsIn ./hosts;
-    hosts = forEach hostnames (host: import ./hosts/${host});
+    hosts = forEach hostnames (host: import ./hosts/${host}/info.nix);
     genForAllSystems = (funct: genAttrs supportedSystems funct);
     supportedSystems = [
       "x86_64-linux"
@@ -44,18 +47,26 @@
 
     #====<< Home manager configurations >>=====================================>
     homeConfigurations = attrsFromList (forEach hosts (host: {
-      "${patt.username}@${host.name}" = homeManagerConfiguration {
+      "${pAtt.username}@${host.name}" = homeManagerConfiguration {
         pkgs = import nixpkgs { inherit (host) system; };
-        extraSpecialArgs = { inherit inputs patt; };
-        modules = [
+        extraSpecialArgs = { inherit alib inputs pAtt; };
+        modules = flatten [
           self.homeModules.default
-          ./hosts/home.nix
+          ./config/home.nix
+          ./config/symlinking.nix
+          ./hosts/${host.name}
         ];
       };
     }));
 
     #====<< Home manager modules >>============================================>
-    homeModules.default = { imports = listFilesRecursive ./modules; };
+    homeModules = rec {
+      personal = { imports = listFilesRecursive ./modules; };
+      default = [ personal ] ++ input-modules;
+      input-modules = [
+        inputs.nixvim.homeManagerModules.nixvim
+      ];
+    };
 
     #====<< Nix Code Formatter >>==============================================>
     # This defines the formatter that is used when you run `nix fmt`. Since this

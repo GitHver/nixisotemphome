@@ -1,11 +1,11 @@
 { lib
-, patt
+, pAtt
 , ...
 }:
 
 let
   inherit (lib) mkDefault;
-  inherit (patt) username;
+  inherit (pAtt) username;
 in {
   
   config = {

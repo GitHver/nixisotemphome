@@ -6,24 +6,24 @@
 
 let
   inherit (lib) mkOption;
-  cfg = config.home.font;
+  cfg = config.fonts;
 in {
 
-  options.home.font = {
+  options.fonts = {
     packages = mkOption {
       default = [];
     };
-    nerdFonts = mkOption {
+    nerdfonts = mkOption {
       default = [];
     };
   };
 
-  config = {
-    home.packages = cfg.packages
+  config.home.packages =
+    cfg.packages
     ++ [
       (pkgs.nerdfonts.override { 
-        fonts = cfg.nerdFonts;
+        fonts = cfg.nerdfonts;
       })
-    ];
-  };
+    ]
+  ;
 }

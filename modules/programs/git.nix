@@ -1,10 +1,10 @@
 { pkgs
-, patt
+, pAtt
 , ...
 }:
 
 let
-  inherit (patt) gitUsername gitEmail;
+  inherit (pAtt) gitUsername gitEmail;
 in {
 
   #====<< Credentials >>=======================================================>

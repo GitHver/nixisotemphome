@@ -13,6 +13,7 @@ in {
     elem (getName pkg) [
       # Add additional package names here
       "obsidian"
+      "spotify"
     ]
   );
 
