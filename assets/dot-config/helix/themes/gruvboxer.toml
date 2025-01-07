@@ -1,4 +1,5 @@
 inherits = "base16_transparent"
+
 "comment" = { fg = "ligh-gray", modifiers = [ "italic", "bold" ] }
 "variable" = "light-blue"
 "variable.other.member" = "light-blue"
@@ -15,7 +16,7 @@ inherits = "base16_transparent"
 "ui.cursor.primary" = { fg = "black", bg = "white" }
 "ui.cursor.match" = { modifiers = [ "reversed" ] }
 "ui.bufferline" = { fg = "light-gray" }
-"ui.bufferline.active" = { fg = "white" }
+"ui.bufferline.active" = { fg = "white", modifiers = [ "bold" ] }
 
 
 # [palette]

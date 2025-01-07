@@ -30,8 +30,8 @@
     pAtt = rec {
       flakeRepo = "/home/${username}/Nix/home-manager";
       flakePath = path: flakeRepo + removePrefix (toString self) (toString path);
-      username = "your-username";
-      email    = "your@email.domain";
+      username    = "your-username";
+      email       = "your@email.domain";
       gitUsername = username;
       gitEmail    = email;
     };
@@ -52,8 +52,6 @@
         extraSpecialArgs = { inherit alib inputs pAtt; };
         modules = flatten [
           self.homeModules.default
-          ./config/home.nix
-          ./config/symlinking.nix
           ./hosts/${host.name}
         ];
       };
@@ -64,7 +62,6 @@
       personal = { imports = listFilesRecursive ./modules; };
       default = [ personal ] ++ input-modules;
       input-modules = [
-        inputs.nixvim.homeManagerModules.nixvim
       ];
     };
 

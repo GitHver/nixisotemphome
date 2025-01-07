@@ -20,10 +20,13 @@ for n in {0..10}; do
   echo "$n"
 done
 
-for dir in $(ls); do
+for dir in *; do
   echo "$dir"
 done
 
 for file in *.nix; do
   echo "$file"
 done
+
+# $@
+# shift

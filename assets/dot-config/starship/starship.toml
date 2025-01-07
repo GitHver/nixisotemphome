@@ -11,6 +11,14 @@ success_symbol = "[❯](bold green)"
 error_symbol =  "[❯](bold red)"
 format = '$symbol '
 
+[os]
+format = '[$symbol](bold white) '   
+disabled = false
+
+[os.symbols]
+NixOS = ''
+Unknown = '󰠥'
+
 # Shows the username
 [username]
 style_user = 'yellow bold'

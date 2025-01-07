@@ -3,9 +3,9 @@
 name = "markdown"
 soft-wrap.enable = true
 
-[[languages]]
-name = "nix"
-language-server = [ "nixd", "nil" ]
+# [[languages]]
+# name = "nix"
+# language-server = [ "nixd", "nil" ]
 
-[language-server.nixd]
-command = "nixd"
+# [language-server.nixd]
+# command = "nixd"
