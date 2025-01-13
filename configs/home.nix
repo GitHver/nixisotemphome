@@ -68,8 +68,8 @@ in { config = {
     # launchFromBash = true;
   };
   # A shell where all data is structured. Great for writing scripts.
-  programs.nushell = enabled // {
-    launchFromBash = true;
+  programs.nushell = disabled // {
+    # launchFromBash = true;
   };
 
   #====<< Terminal programs >>=================================================>

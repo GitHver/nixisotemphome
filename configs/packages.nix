@@ -14,38 +14,38 @@
     #==<< Internet >>==================>
     firefox         # Fiwefwox!
     # tor-browser     # Anonymous web browser.
-    thunderbird     # FOSS email client.
+    # thunderbird     # FOSS email client.
     # signal-desktop  # Private messages.
-    vesktop         # Linux Discord client.
+    # vesktop         # Linux Discord client.
     # qbittorrent     # BitTorrent client.
-    yt-dlp          # Tool to download media from the web.
-    spotdl          # Finds spotify songs and downloads them of YouTube.
+    # yt-dlp          # Tool to download media from the web.
+    # spotdl          # Finds spotify songs and downloads them of YouTube.
     #==<< Creativity >>================>
     libreoffice     # FOSS office suite.
-    obsidian        # Markdown file editor.
-    gimp            # GNU image manipulator
+    # obsidian        # Markdown file editor.
+    # gimp            # GNU image manipulator
     # krita           # Digital illustration program.
-    obs-studio      # Video capture software.
+    # obs-studio      # Video capture software.
     # kdenlive        # Exeptional video editing software.
     # tenacity        # Mutli track audio editor/recorder.
     # blender         # 3D modeling software.
     #==<< Media >>=====================>
     # mpv             # Multi media player.
-    lollypop        # GTK Music player.
+    # lollypop        # GTK Music player.
     # shortwave       # Radio station hub.
     # spotify
     #==<< Misc >>======================>
     # wineWowPackages.stable  # Windows executable (.exe) translator.
-    prismlauncher           # Open source Minecraft launcher.
+    # prismlauncher           # Open source Minecraft launcher.
     #==<< Terminal utils >>============>
     ripgrep
     fzf
     #==<< Programming >>===============>
-    rustup
-    gcc
+    # rustup
+    # gcc
     #==<< LSPs >>======================>
     nil # nix lsp
-    bash-language-server
+    # bash-language-server
     # fish-lsp
   ])
   ++ # Nerdfonts
