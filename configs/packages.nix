@@ -21,7 +21,7 @@
     # yt-dlp          # Tool to download media from the web.
     # spotdl          # Finds spotify songs and downloads them of YouTube.
     #==<< Creativity >>================>
-    libreoffice     # FOSS office suite.
+    # libreoffice     # FOSS office suite.
     # obsidian        # Markdown file editor.
     # gimp            # GNU image manipulator
     # krita           # Digital illustration program.
@@ -42,10 +42,10 @@
     fzf
     #==<< Programming >>===============>
     # rustup
-    # gcc
+   gcc
     #==<< LSPs >>======================>
     nil # nix lsp
-    # bash-language-server
+    bash-language-server
     # fish-lsp
   ])
   ++ # Nerdfonts

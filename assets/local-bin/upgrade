@@ -4,6 +4,12 @@ set -o pipefail
 # no `-u` because there can often be a variable with no value in the script.
 
 function main {
+    # Makes sure you aren't running this command as root
+    if [[ "$(id -u)" -eq 0 ]]; then
+        echo "Do not run this command as root, it will call sudo itself"
+        exit 1
+    fi
+
     # Check the arguments and assign the `level` variable accordingly.
     local level
     case $1 in
@@ -12,44 +18,48 @@ function main {
         "all")    level=2 ;;
         "")
             echo "no arguments given"
-            exit 1
+            exit 2
             ;;
         *)
             echo "invalid argument"
-            exit 2
+            exit 3
             ;;
     esac
 
-    # Check for sudo if relevant.
-    checkSudo $level
-
     # All values below 3 update the system config.
     if [ $level -lt 3 ]; then
-        actions "/home/${USER}/Nix/nixos-config" "system"
+        # Aborts the script if you don't give sudo priviledges
+        if sudo true; then true; else
+            echo "Aborting upgrade"
+            exit 4
+        fi
+        actions "$NIXOS_REPO" "system"
     fi
     # All values above 1 update the user config.
     if [ $level -gt 1 ]; then
-        actions "/home/${USER}/Nix/home-manager" "user"
+        actions "$HOMEMANAGER_REPO" "user"
     fi
 }
 
 # The execution order for the update process.
 function actions {
     # Go into the directory containing the flake (needed for git commands).
-    cd "$1" # || echo "A cd commmand failed, aborting" && exit 5
+    cd "$1" || exit 5
 
-    # This checks if you have unsaved changes anywhere and aborts if there are any.
-    changes=$(git diff)
-    if [ "$changes" != "" ]; then
-        echo "you have unsaved changes in your ${2} config"
-        return 0
-    fi
+    # This checks if you have unsaved changes anywhere and aborts if there are
+    # any. Uncomment the below if you want to make sure you don't put any
+    # changes out of sync in the git history.
+    # changes=$(git diff)
+    # if [ "$changes" != "" ]; then
+    #     echo "you have unsaved changes in your ${2} config"
+    #     return 0
+    # fi
 
     # Checks if anything was actually updated. If not, then exit with a success.
-    flakebefore=$(git diff) # &>/dev/null)
+    flakebefore=$(cat flake.lock) # &>/dev/null)
     git pull &>/dev/null
     nix flake update
-    flakeafter=$(git diff) # &>/dev/null)
+    flakeafter=$(cat flake.lock) # &>/dev/null)
     if [ "$flakebefore" = "$flakeafter" ]; then
         echo "no updates available for your ${2}"
         return 0
@@ -67,23 +77,9 @@ function actions {
     if [ $? -ne 0 ]; then
         git checkout HEAD flake.lock
     else
-        git add . &&
+        git add flake.lock &&
         git commit -m 'updated flake.lock' &&
         git push
-    fi
-}
-
-# if you are updating your system you need sudo privileges. This makes sure that
-# if you don't have sudo, the script exits.
-function checkSudo {
-    if [ "$1" -lt 3 ]; then
-        if [[ "$(id -u)" -eq 0 ]]; then
-            echo "Do not run this command as root, it will call sudo itself"
-            exit 3
-        elif $(sudo true); then return 0; else
-            echo "Aborting upgrade"
-            exit 4
-        fi
     fi
 }
 

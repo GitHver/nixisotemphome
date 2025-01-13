@@ -1,5 +1,6 @@
 { pkgs
 , lib
+, config
 , alib
 , pAtt
 , ...
@@ -8,7 +9,7 @@
 let
   inherit (alib.enabling) enabled disabled enableAllShells;
   inherit (lib) mkDefault;
-  inherit (pAtt) username gitUsername gitEmail;
+  inherit (pAtt) username gitUsername gitEmail nixRepo homeManagerRepo nixosRepo;
 in { config = {
 
   #====<< Home manager settings >>=============================================>
@@ -34,6 +35,8 @@ in { config = {
 
   #====<< Shell settings >>====================================================>
   home.sessionVariables = {
+    NIXOS_REPO = config.home.homeDirectory + nixRepo + nixosRepo;
+    HOMEMANAGER_REPO = config.home.homeDirectory + nixRepo + homeManagerRepo;
     #ANY_VARIBLE = "ANY-VALUE";
   };
   home.shellAliases = {
@@ -64,7 +67,7 @@ in { config = {
     # launchFromBash = true;
   };
   # The Friendly Interactive Shell. Simple and easy to use BASH alternative.
-  programs.fish = enabled // {
+  programs.fish = disabled // {
     # launchFromBash = true;
   };
   # A shell where all data is structured. Great for writing scripts.

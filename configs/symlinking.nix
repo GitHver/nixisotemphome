@@ -8,7 +8,7 @@
 
 let
   # Functions required to make this work.
-  flakePath = path: (config.home.homeDirectory + flakeRepo) + removePrefix (toString self) (toString path);
+  flakePath = path: (config.home.sessionVariables.HOMEMANAGER_REPO) + removePrefix (toString self) (toString path);
   inherit (alib) attrsFromList;
   inherit (pAtt) flakeRepo;
   inherit (lib) removePrefix;
