@@ -56,7 +56,7 @@ in { config = {
     # be true even if you don't use BASH as your preffered shell.blesh
     enable = true;
     # A pure *B*ash *L*ine *E*ditor (.sh). Gives BASH similar features to
-    # base Fish and ZSH autocompletions. Can be slow on older hardware.
+    # base Fish and ZSH autocompletions. Can be really slow on older hardware.
     blesh.enable = true;
   };
   # Z shell. A simple and extensible with a POSIX compliant mode.
@@ -64,7 +64,7 @@ in { config = {
     # launchFromBash = true;
   };
   # The Friendly Interactive Shell. Simple and easy to use BASH alternative.
-  programs.fish = disabled // {
+  programs.fish = enabled // {
     # launchFromBash = true;
   };
   # A shell where all data is structured. Great for writing scripts.

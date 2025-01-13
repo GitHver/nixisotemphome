@@ -1,4 +1,7 @@
-#! /usr/bin/env nu
+#! /usr/bin/env nix
+#! nix shell nixpkgs#nushell --command nu
+
+# use this if not on nix: `#! /usr/bin/env nu`
 
 # Script start.
 def main [arg1] {

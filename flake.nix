@@ -22,14 +22,12 @@
     alib = lib;
     #====<< Used functions >>==========>
     inherit (lib) genAttrs attrsFromList namesOfDirsIn;
-    inherit (lib.lists) flatten forEach foldl;
-    inherit (lib.strings) removePrefix;
+    inherit (lib.lists) flatten forEach;
     inherit (lib.filesystem) listFilesRecursive;
     inherit (home-manager.lib) homeManagerConfiguration;
     #====<< Personal Attributes >>=====>
     pAtt = rec {
-      flakeRepo = "/home/${username}/Nix/home-manager";
-      flakePath = path: flakeRepo + removePrefix (toString self) (toString path);
+      flakeRepo   = "/Nix/home-manager";
       username    = "your-username";
       email       = "your@email.domain";
       gitUsername = username;
@@ -38,32 +36,13 @@
     #====<< Other >>===================>
     hostnames = namesOfDirsIn ./hosts;
     hosts = forEach hostnames (host: import ./hosts/${host}/info.nix);
+    # This is only for the formatter, as it is not tied to an already active system.
     genForAllSystems = (funct: genAttrs supportedSystems funct);
     supportedSystems = [
       "x86_64-linux"
       # "aarch64-linux"
     ];
   in {
-
-    #====<< Home manager configurations >>=====================================>
-    homeConfigurations = attrsFromList (forEach hosts (host: {
-      "${pAtt.username}@${host.name}" = homeManagerConfiguration {
-        pkgs = import nixpkgs { inherit (host) system; };
-        extraSpecialArgs = { inherit alib inputs pAtt; };
-        modules = flatten [
-          self.homeModules.default
-          ./hosts/${host.name}
-        ];
-      };
-    }));
-
-    #====<< Home manager modules >>============================================>
-    homeModules = rec {
-      personal = { imports = listFilesRecursive ./modules; };
-      default = [ personal ] ++ input-modules;
-      input-modules = [
-      ];
-    };
 
     #====<< Nix Code Formatter >>==============================================>
     # This defines the formatter that is used when you run `nix fmt`. Since this
@@ -75,6 +54,26 @@
       or pkgs.nixfmt-rfc-style
       or pkgs.alejandra
     );
+
+    #====<< Home manager configurations >>=====================================>
+    homeConfigurations = attrsFromList (forEach hosts (host: {
+      "${pAtt.username}@${host.name}" = homeManagerConfiguration {
+        pkgs = import nixpkgs { inherit (host) system; };
+        extraSpecialArgs = { inherit alib inputs pAtt self; };
+        modules = flatten [
+          ./hosts/${host.name}
+          self.homeModules.default
+        ];
+      };
+    }));
+
+    #====<< Home manager modules >>============================================>
+    homeModules = rec {
+      personal = { imports = listFilesRecursive ./modules; };
+      default = [ personal ] ++ input-modules;
+      input-modules = [
+      ];
+    };
 
   };
 
