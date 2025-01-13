@@ -27,7 +27,9 @@
     inherit (home-manager.lib) homeManagerConfiguration;
     #====<< Personal Attributes >>=====>
     pAtt = rec {
-      flakeRepo   = "/Nix/home-manager";
+      nixRepo         = "/Nix";
+      homeManagerRepo = "/home-manager";
+      nixosRepo       = "/nixos-config";
       username    = "your-username";
       email       = "your@email.domain";
       gitUsername = username;
