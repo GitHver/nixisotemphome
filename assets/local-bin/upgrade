@@ -1,81 +1,90 @@
-#! /usr/bin/env nix
-#! nix shell nixpkgs#nushell --command nu
+#! /usr/bin/env bash
+set -o pipefail
+# no `-e` because we check for fails in the build and use that to revert changes.
+# no `-u` because there can often be a variable with no value in the script.
 
-# use this if not on nix: `#! /usr/bin/env nu`
-
-# Script start.
-def main [arg1] {
+function main {
     # Check the arguments and assign the `level` variable accordingly.
-    let level = match $arg1 {
-        "user" => {3},
-        "system" => {1},
-        "all" => {2},
-        _ => {
-            print $"invalid argument: ($arg1)"
+    local level
+    case $1 in
+        "system") level=1 ;;
+        "user")   level=3 ;;
+        "all")    level=2 ;;
+        "")
+            echo "no arguments given"
             exit 1
-        },
-    }
-    # All values below 3 update the system config.
-    if $level < 3 {
-        if (sudo true) == false {
-            print "aborting upgrade"
+            ;;
+        *)
+            echo "invalid argument"
             exit 2
-        }
-        actions $"($env.HOME)/Nix/nixos-config" system
-    }
+            ;;
+    esac
+
+    # Check for sudo if relevant.
+    checkSudo $level
+
+    # All values below 3 update the system config.
+    if [ $level -lt 3 ]; then
+        actions "/home/${USER}/Nix/nixos-config" "system"
+    fi
     # All values above 1 update the user config.
-    if $level > 1 {
-        actions $"($env.HOME)/Nix/home-manager" user
-    }
-    # All done!
-    print "done!"
+    if [ $level -gt 1 ]; then
+        actions "/home/${USER}/Nix/home-manager" "user"
+    fi
 }
 
-# The execution order for the update process
-def actions [path word] {
+# The execution order for the update process.
+function actions {
     # Go into the directory containing the flake (needed for git commands).
-    cd $path
+    cd "$1" # || echo "A cd commmand failed, aborting" && exit 5
 
     # This checks if you have unsaved changes anywhere and aborts if there are any.
-    let changes = (git diff)
-    if $changes != "" {
-        print $"you have unsaved changes in your ($word) config"
-        return 3
-    }
+    changes=$(git diff)
+    if [ "$changes" != "" ]; then
+        echo "you have unsaved changes in your ${2} config"
+        return 0
+    fi
 
     # Checks if anything was actually updated. If not, then exit with a success.
-    let flakebefore = (open flake.lock)
-    git pull | ignore
-    nix flake update #| ignore
-    let flakeafter = (open flake.lock)
-    if $flakebefore == $flakeafter {
-        print $"no updates available for your ($word)"
-        return 4
-    }
+    flakebefore=$(git diff) # &>/dev/null)
+    git pull &>/dev/null
+    nix flake update
+    flakeafter=$(git diff) # &>/dev/null)
+    if [ "$flakebefore" = "$flakeafter" ]; then
+        echo "no updates available for your ${2}"
+        return 0
+    fi
 
     # Execute The relevant command.
-    match $word {
-        "user" => { home-manager switch },
-        "system" => { sudo nixos-rebuild switch },
-    }
+    case $2 in
+        "system") sudo nixos-rebuild switch ;;
+        "user") home-manager switch ;;
+        *) echo "literally how?"; exit 6
+    esac
 
     # If the updated build failed, then revert the `flake.lock`.
-    # Else commit the changes
-    if $env.LAST_EXIT_CODE != 0 {
+    # Else commit the changes.
+    if [ $? -ne 0 ]; then
         git checkout HEAD flake.lock
-    } else {
-        git add .
-        git commit -m 'update'
+    else
+        git add . &&
+        git commit -m 'updated flake.lock' &&
         git push
-    }
+    fi
 }
 
-def check_sudo [] {
-    if (id -u) == 0 {
-        print "do not use this command with sudo, it will call for root itself"
-        exit 3
-    } else if (sudo true) == false {
-        print "aborting upgrade"
-        exit 4
-    }
+# if you are updating your system you need sudo privileges. This makes sure that
+# if you don't have sudo, the script exits.
+function checkSudo {
+    if [ "$1" -lt 3 ]; then
+        if [[ "$(id -u)" -eq 0 ]]; then
+            echo "Do not run this command as root, it will call sudo itself"
+            exit 3
+        elif $(sudo true); then return 0; else
+            echo "Aborting upgrade"
+            exit 4
+        fi
+    fi
 }
+
+main "$@"
