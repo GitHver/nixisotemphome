@@ -17,7 +17,7 @@ in {
   };
 
   config.home.sessionVariables = mkIf cfg.useSubDir {
-    STARSHIP_CONFIG = "$HOME/.config/starship/starship.toml";
+    STARSHIP_CONFIG = "${config.home.homeDirectory}/.config/starship/starship.toml";
   };
 
 }

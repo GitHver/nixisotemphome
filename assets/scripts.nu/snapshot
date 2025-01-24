@@ -1,0 +1,81 @@
+#! /usr/bin/env nu
+
+use std assert
+
+def main [
+    --merge (-m)
+    --flip-merge (-M)
+    --squash (-s)
+    --branch (-b): string
+    --no-commit (-n)
+]: nothing -> nothing {
+
+    # Assigns the `$mbranch` variable to the custom value if it was passed
+    let $main_branch = match $branch {
+        null => $env.GITMBRANCH
+        _ => $branch
+    }
+
+    # Makes sure you aren't trying to merge and flip-merge
+    if $merge and $flip_merge {
+        print -e "cannot use both `-m` and `-M`; cannot both oneway merge and merge both ways"
+        exit 1
+    }
+
+    # If the `-s` flag was passed to the script then show commits to revert to.
+    if $squash {
+        git log -10 --oneline
+        let squash_number = input-number -p "Choose a commit to revert to (HEAD is 0) [0-9] (or `E` to exit): "
+        git reset --soft $"HEAD~($squash_number)"
+    }
+
+    # Always add all files and commit them.
+    git add .
+    if not $no_commit {
+        git commit
+    }
+
+    # If `-m` was passed to the script then merge the branch into main.
+    if $merge or $flip_merge {
+        let previous_branch = (git rev-parse --abbrev-ref HEAD)
+        git switch $main_branch o+e> /dev/null
+        try { git pull e> /dev/null }
+        git merge $previous_branch
+        try { git push o+e>| ignore }
+        git switch $previous_branch o+e> /dev/null
+        if $flip_merge {
+            git merge $main_branch
+        }
+    }
+}
+
+# This function does not work properly when used as its own script in a
+# seperate file (the promt doesn't show up).
+def input-number [
+    --number-of-characters (-c): int = 1
+    --allowed-tries (-t): int = 3
+    --prompt (-p): string = "Type in a number [0-9] or `E` to exit: "
+] {
+    # Make sure that values below 1 are not passed to `--allowed-tries`
+    assert greater $allowed_tries 0
+    # Make sure that values below 1 are not passed to `--number-of-characters`
+    assert greater $number_of_characters 0
+    # Inserts an range from 1 to infinity to loop forever until a condition
+    # exits the script with a success or failure.
+    for i in 1.. {
+        let answer = (input $prompt -n $number_of_characters)
+        try {return ($answer | into int)} catch {}
+        match $answer {
+            "e" | "E" => { exit 1 },
+            _ => {
+                if $i < $allowed_tries {
+                    print -e $"`($answer)` is not a number, try again"
+                    sleep 0.5sec
+                } else {
+                    print -e $"($allowed_tries) invalid answers given. Aborting"
+                    exit 2
+                }
+            }
+        }
+    }
+}

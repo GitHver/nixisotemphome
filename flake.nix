@@ -22,18 +22,19 @@
     alib = lib;
     #====<< Used functions >>==========>
     inherit (lib) genAttrs attrsFromList namesOfDirsIn;
-    inherit (lib.lists) flatten forEach;
+    inherit (lib.lists) flatten forEach foldl;
     inherit (lib.filesystem) listFilesRecursive;
     inherit (home-manager.lib) homeManagerConfiguration;
     #====<< Personal Attributes >>=====>
     pAtt = rec {
-      nixRepo         = "/Nix";
+      parentRepo      = "/Nix";
       homeManagerRepo = "/home-manager";
       nixosRepo       = "/nixos-config";
       username    = "your-username";
       email       = "your@email.domain";
       gitUsername = username;
       gitEmail    = email;
+      gitMbranch  = "main";
     };
     #====<< Other >>===================>
     hostnames = namesOfDirsIn ./hosts;
@@ -73,8 +74,7 @@
     homeModules = rec {
       personal = { imports = listFilesRecursive ./modules; };
       default = [ personal ] ++ input-modules;
-      input-modules = [
-      ];
+      input-modules = [ ];
     };
 
   };

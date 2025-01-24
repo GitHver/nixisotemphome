@@ -1,0 +1,35 @@
+#! /usr/bin/env nu
+
+def main [
+    --system (-s)
+    --only-system (-S)
+    --max-jobs (-j): int
+    --cores (-c): int
+]: nothing -> nothing {
+
+    # Variable assignment
+    let $job = match $max_jobs {
+        null => [],
+        _ => ["--max-jobs" $max_jobs],
+    }
+    let $core = match $cores {
+        null => []
+        _ => ["--cores" $cores]
+    }
+    let options = $job ++ $core
+
+    # Checks for incompatable flags.
+    if $system and $only_system {
+        print -e "Using both `--system (-s)` and `--only-system (-S)` is not allowed"
+        exit 1
+    }
+
+    # Logic deciding if to rebuild the system and user.
+    if $system or $only_system {
+        sudo nixos-rebuild switch ...$options
+    }
+    if not $only_system {
+        home-manager switch ...$options
+    }
+
+}

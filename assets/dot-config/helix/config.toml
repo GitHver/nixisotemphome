@@ -1,10 +1,11 @@
-theme = "gruvboxer"
+theme = "cosmic-dark"
 
 [editor]
 line-number = "relative"
 # cursorline = true
 scrolloff = 4
 bufferline = "always"
+end-of-line-diagnostics = "hint"
 
 [editor.statusline]
 left = [
@@ -33,6 +34,11 @@ mode.select = "SELECT"
 normal = "block"
 insert = "bar"
 select = "underline"
+
+[editor.inline-diagnostics]
+# Minimum severity to show a diagnostic on the primary cursor's line.
+# Note that `cursor-line` diagnostics are hidden in insert mode.
+cursor-line = "error"
 
 [editor.soft-wrap]
 enable = false

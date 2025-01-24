@@ -1,0 +1,181 @@
+#! /usr/bin/env nu
+
+use std assert
+
+def main [
+    --system (-s)
+    --only-system (-S)
+    # To be revised. needs to be able to take multiple arguments (paths)
+    # --custom (-c): path
+    --merge (-m)
+    --poweroff (-p)
+    --reboot (-r)
+]: nothing -> nothing {
+
+    # Checks if USER is root and aborts if true, warning the user not to run this command as root.
+    try { assert ($"(id -u)" != "0") } catch {
+        print -e "Do not call this command as root"
+        exit 1
+    }
+
+    # Checks for incompatable flags.
+    if $reboot and $poweroff {
+        print -e "cannot use both `-R` and `-P`; cannot reboot and poweroff"
+        exit 1
+    } else if $reboot and (not $system and not $only_system) {
+        print -e "You are about to only upgrade your user, but have also used the reboot flag.\nChanges to home-manager (your user config) do not ever need a system reboot to apply."
+        input-accept
+    } else if $system and $only_system {
+        print -e "Using both `--system (-s)` and `--only-system (-S)` is not allowed"
+        exit 1
+    }
+
+    # Aborts the script if you don't give sudo priviledges if needed.
+    if ($system or $only_system) {
+        sudo true
+    }
+
+    # Logic deciding if to upgrade the system and user.
+    if $system or $only_system {
+        actions $env.NIXOS_REPO system $merge
+    }
+    if not $only_system {
+        actions $env.HOMEMANAGER_REPO user $merge
+    }
+
+    # At script completion
+    if $poweroff {
+        poweroff
+    } else if $reboot {
+        reboot
+    }
+}
+
+# The execution order for the update process
+def actions [ path: path, which: string, merge: bool ] {
+
+    # A mutable variable saving the exitcode of the rebuilds.
+    mut exito = 0
+    let main_branch = $env.GITMBRANCH
+
+    # Function to execute before returning from this function.
+    def pre-return [ branch: string, stashed: bool ] {
+        git switch $branch o+e>| ignore
+        if $stashed {
+            git stash pop | ignore
+        }
+    }
+
+    # Execute the relevant command.
+    def commando [] {
+        match $which {
+            "user" => {try {home-manager switch} catch {}},
+            "system" => {try {sudo nixos-rebuild switch} catch {}},
+        }
+        return $env.LAST_EXIT_CODE
+    }
+
+    # Go into the directory containing the flake (needed for git commands).
+    try {
+        # Make sure the directory is a git repositry
+        assert (($"($path)/.git" | path exists) != false)
+        cd $path
+    } catch {
+        print -e $"($path) does not appear to be a git repository"
+        exit 2
+    }
+
+    # This checks if you have unsaved changes anywhere and then stashes them.
+    let stashed = match (git diff HEAD) {
+        "" => false
+        _ => true
+    }
+    if $stashed {
+        print $"Stashed changes in your ($which) repository"
+        git stash -u | ignore
+    }
+
+    # Saves the current branch and switches to the main branch.
+    let previous_branch = (git rev-parse --abbrev-ref HEAD)
+    try { git switch $main_branch o+e>| ignore } catch {
+        print -e $"($main_branch) is not a branch in the ($path) repository"
+        pre-return $previous_branch $stashed
+        exit 2
+    }
+
+    # Check for changes made by `git pull`.
+    let pulled = match (try { git pull e> /dev/null }) {
+        "Already up to date." | "" | null => {false},
+        _ => {true},
+    }
+
+    # Saves the state of the flake.lock and then tries to update the flake, then
+    # saves the state of the flake.lock after the update for comparing later.
+    let flake_before = (open flake.lock)
+    try { nix flake update } catch {
+        print -e "`nix flake update` failed, check your internet connection"
+    }
+    let flake_after = (open flake.lock)
+
+    # Checks if anything was actually updated. If not, then return from the function.
+    if ($flake_before == $flake_after) and not $pulled {
+        print $"no updates available for your ($which) repository"
+        pre-return $previous_branch $stashed
+        return
+    } else if $flake_before != $flake_after {
+        # Commit the change to remove the "dirty repo" warning.
+        git add flake.lock;
+        git commit -m 'updated the flake.lock file'
+    }
+
+    # Apply the upgrades
+    $exito = (commando)
+    
+    # If the updated build failed, then revert the commit. Else push the commit.
+    if $exito == 0 {
+        try { git push e+o>| ignore }
+        # Merge update into previous branch if true.
+        if $merge {
+            snapshot -mb $previous_branch
+        }
+    } else if $flake_before != $flake_after {
+        print -e "Building the new update failed, reverting the commit"
+        git reset --hard HEAD~1
+    }
+
+    # Try to build the version pulled from the remote if the flake was updated.
+    if ($exito != 0) and $pulled and ($flake_before != $flake_after) {
+        print -e "Building the pulled commit instead..."
+        $exito = (commando)
+    }
+
+    # Revert the previous branch to its original state.
+    pre-return $previous_branch $stashed
+
+    # If the last build failed, the exit with a failure.
+    if $exito != 0 {
+        exit 2
+    }
+}
+
+# This function can be called to take input from the user on whether to proceed.
+def input-accept [ --allowed-tries (-t): int = 3 ] {
+    # Make sure that values below 1 are not passed as `--allowed_tries`
+    assert greater $allowed_tries 0
+    # Inserts an range from 1 to infinity to loop forever until a condition
+    # exits the function with a success or failure.
+    for i in 1.. {
+        match (input -n 1 "continue? [Y/N]: ") {
+            "y" | "Y" => { return 0 },
+            "n" | "N" => { exit 1 },
+            _ => {
+                if $i < ($allowed_tries) {
+                    sleep 0.5sec
+                } else {
+                    print -e $"($allowed_tries) invalid answers given. Aborting"
+                    exit 2
+                }
+            },
+        }
+    }
+}

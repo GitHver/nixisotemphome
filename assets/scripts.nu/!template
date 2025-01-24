@@ -1,0 +1,23 @@
+#! /usr/bin/env nu
+
+def main [
+    name?: string
+    --read-input (-r)
+    --greeting (-g): string = "Hello" 
+] {
+    # Makes sure you don't use `-r` and pass an argument to the script.
+    if $read_input and ($name != null) {
+        print -e "Cant use `-r` and pass and argument"
+        exit 1
+    }
+
+    # Check if the `-r` flag was passed to the script.
+    let name = match $read_input {
+        true => (input "Enter your name: ")
+        false if $name != null => $name
+        _ => $env.USER
+    }
+
+    # Print out the results.
+    print $"($greeting) ($name)"
+}

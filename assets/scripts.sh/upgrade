@@ -1,0 +1,220 @@
+#! /usr/bin/env sh
+set -eu
+# set -o pipefail # Undefined in POSIX shell
+
+usage() {
+echo "\
+Usage: upgrade [-flags]
+Available flags:
+    -h: Help.                       Prints this page.
+    -v: Verbose.                    \`set -xv\`.
+    -s: System.                     Also upgrade the system (NixOS).
+    -S: Only system.                Only upgrade the system (NixOS).
+    -p: Power off.                  Power off at command completion.
+    -r: Reboot.                     Reboot at command completion."
+}
+
+main() {
+    # Check the user id to make sure you aren't running this command as root.
+    if [ "$(id -u)" -eq 0 ]; then
+        echo "Do not call this command as root" >&2
+        exit 1
+    fi
+
+    # Variables and their default values.
+    system=false
+    only_system=false
+    reboot=false
+    poweroff=false
+    merge=false
+    urepo=$HOMEMANAGER_REPO
+    srepo=$NIXOS_REPO
+
+    # Option parsing.
+    while getopts ":hvsSmpr" flag; do
+        case "$flag" in
+        h) # Help.
+            usage; exit 0 ;;
+        v) # Verbose.
+            set -xv ;;
+        s) # System.
+            system=true ;;
+        S) # Only system.
+            only_system=true ;;
+        # c) # Custom path.
+        #     no_arguments=false
+        #     custom=true
+        #     custom_path=$OPTARG
+        #     ;;
+        m) # Merge
+            merge=true ;;
+        p) # Power off.
+            poweroff=true ;;
+        r) # Reboot.
+            reboot=true ;;
+        *) # Anything else is invalid and exits the script.
+            usage >&2; exit 1 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    # Makes sure you are not passing any arguments to the script except flags.
+    for arg in "$@"; do
+        echo "Argument \`$arg\` not valid. This script takes no arguments except for short flags" >&2
+        usage >&2
+        exit 1
+    done
+
+    # Checks for incompatable flags.
+    if $reboot && $poweroff; then
+        echo "cannot use both \`-R\` and \`-P\`; cannot reboot and poweroff" >&2
+        exit 1
+    elif $reboot && (! $system && ! $only_system); then
+        printf "You are about to only upgrade your user, but have also used the reboot flag.\nChanges to home-manager (your user config) do not ever need a system reboot to apply.\n" >&2
+        inputAccept
+    elif $system && $only_system; then
+        echo "Using both \`--system (-s)\` and \`--only-system (-S)\` is not allowed" >&2
+        exit 1
+    fi
+
+    # Aborts the script if you don't give sudo priviledges if needed.
+    if ($system || $only_system) && ! sudo true; then
+        echo "Aborting upgrade" >&2
+        exit 1
+    fi
+
+    # Logic deciding if to upgrade the system and user.
+    if $system || $only_system; then
+        actions "$srepo" "system"
+    fi
+    if ! $only_system; then
+        actions "$urepo" "user"
+    fi
+
+    # Checks if it's supposed to turn of the computer at the end of the script.
+    if "$poweroff"; then
+        poweroff
+    elif "$reboot"; then
+        reboot
+    fi
+}
+
+# The execution order for the update process.
+actions() {
+    path="$1"
+    which="$2"
+    mainbranch=$GITMBRANCH
+    stashed=false
+    pulled=false
+    built=true
+
+    # Switch to the previous branch and pop the stash if there was one.
+    preReturn() {
+        git switch "$previous_branch" 2> /dev/null >&2
+        if $stashed; then
+            git stash pop >/dev/null
+        fi
+    }
+
+    # Execute The relevant command.
+    commando() {
+        case $which in
+        "system") sudo nixos-rebuild switch || built=false ;;
+        "user") home-manager switch || built=false ;;
+        esac
+    }
+
+    # Go into the directory containing the flake (needed for git commands).
+    if [ ! -d "$path"/.git ]; then
+        echo "$path does not appear to be a git repository" >&2
+        exit 2
+    else
+        cd "$path" # || { echo "A cd command failed. Cannot find $path" >&2; exit 123; }
+    fi
+
+    # This checks if you have unsaved changes anywhere and then stashes them.
+    if [ "$(git diff HEAD)" != "" ]; then
+        echo "Stashed changes in your ${which} repository"
+        git stash -u >/dev/null
+        stashed=true
+    fi
+
+    # Saves the current branch and switches to the main branch.
+    previous_branch=$(git rev-parse --abbrev-ref HEAD)
+    git switch "$mainbranch" 2> /dev/null >&2 || {
+        echo "$mainbranch is not a branch in the $path repository" >&2
+        preReturn
+        exit 2
+    }
+
+    # Check for changes made by `git pull`.
+    if [ "$(git pull 2> /dev/null)" != "" ]; then
+        pulled=true
+    fi
+
+    # Saves the state of the flake.lock and then tries to update the flake, then
+    # saves the state of the flake.lock after the update for comparing later.
+    flake_before=$(cat flake.lock)
+    nix flake update || {
+        echo "\`nix flake update\` failed, check your internet connection" >&2
+        exit 2
+    }
+    flake_after=$(cat flake.lock)
+
+    # Checks if anything was actually updated. If not, then return from the function.
+    if [ "$flake_before" = "$flake_after" ] && ! $pulled; then
+        echo "no updates available for your ${which} repository"
+        preReturn
+        return 0
+    elif [ "$flake_before" != "$flake_after" ]; then
+        # Commit the change to remove the "dirty repo" warning
+        git add flake.lock &&
+        git commit -m 'updated the flake.lock file'
+    fi
+
+    # Apply the upgrades
+    commando
+    
+    # If the updated build failed, then revert the commit. Else push the commit.
+    if $built; then
+        git push 2> /dev/null >&2 || true
+        # Merge update into previous branch if true.
+        if $merge; then
+            snapshot -mb "$previous_branch"
+        fi
+    elif [ "$flake_before" != "$flake_after" ]; then
+        echo "Building the new update failed, reverting the commit..." >&2
+        git reset --hard HEAD~1
+    fi
+
+    # Revert the previous branch to its original state.
+    preReturn
+
+    # If the last build failed, the exit with a failure.
+    if ! $built; then
+        exit 2
+    fi
+}
+
+# This function can be called to take input from the user on whether to proceed.
+inputAccept() {
+    for i in 1 2 3; do 
+        printf "continue? [Y/N]: " >&2
+        read input
+        case $input in
+        [yY]) return 0 ;;
+        [nN]) exit 1 ;;
+        *)
+            if [ $i -lt  3 ]; then
+                sleep 0.5
+            else
+                echo "3 invalid answers, aborting" >&2
+                exit 2
+            fi
+            ;;
+        esac
+    done
+}
+
+# Calls the main function with all arguments given to the script.
+main "$@"

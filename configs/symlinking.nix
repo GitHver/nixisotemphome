@@ -1,7 +1,6 @@
 { lib
 , alib
 , config
-, pAtt
 , self
 , ...
 }:
@@ -10,7 +9,6 @@ let
   # Functions required to make this work.
   flakePath = path: (config.home.sessionVariables.HOMEMANAGER_REPO) + removePrefix (toString self) (toString path);
   inherit (alib) attrsFromList;
-  inherit (pAtt) flakeRepo;
   inherit (lib) removePrefix;
   inherit (lib.lists) forEach;
   inherit (config.lib.file) mkOutOfStoreSymlink;
@@ -37,7 +35,7 @@ in { config = {
     )
     (symlink
       ".local/bin"
-      ./../assets/local-bin
+      ./../assets/scripts.sh # You can change this into `scripts.nu` to use nushell scripts.
     )
     (symlink
       ".mozilla/firefox/${config.home.username}"

@@ -3,6 +3,12 @@
 name = "markdown"
 soft-wrap.enable = true
 
+# [[language]]
+# name = "fish"
+# language-servers = [ "fish-lsp" ]
+# [language-server.fish-lsp]
+# command = "fish-lsp start"
+
 # [[languages]]
 # name = "nix"
 # language-server = [ "nixd", "nil" ]

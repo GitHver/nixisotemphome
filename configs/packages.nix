@@ -42,11 +42,10 @@
     fzf
     #==<< Programming >>===============>
     # rustup
-   gcc
+    # gcc
     #==<< LSPs >>======================>
     nil # nix lsp
     bash-language-server
-    # fish-lsp
   ])
   ++ # Nerdfonts
   (with pkgs.nerd-fonts; [

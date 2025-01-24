@@ -9,7 +9,7 @@
 let
   inherit (alib.enabling) enabled disabled enableAllShells;
   inherit (lib) mkDefault;
-  inherit (pAtt) username gitUsername gitEmail nixRepo homeManagerRepo nixosRepo;
+  inherit (pAtt) username gitUsername gitEmail gitMbranch parentRepo homeManagerRepo nixosRepo;
 in { config = {
 
   #====<< Home manager settings >>=============================================>
@@ -35,17 +35,17 @@ in { config = {
 
   #====<< Shell settings >>====================================================>
   home.sessionVariables = {
-    NIXOS_REPO = config.home.homeDirectory + nixRepo + nixosRepo;
-    HOMEMANAGER_REPO = config.home.homeDirectory + nixRepo + homeManagerRepo;
+    NIXOS_REPO = config.home.homeDirectory + parentRepo + nixosRepo;
+    HOMEMANAGER_REPO = config.home.homeDirectory + parentRepo + homeManagerRepo;
+    GITMBRANCH = gitMbranch;
     #ANY_VARIBLE = "ANY-VALUE";
   };
   home.shellAliases = {
     #==<< Nix misc aliases >>==>
-    cds = "cd ~/Nix/nixos-config";
-    cdh = "cd ~/Nix/home-manager";
+    cds = "cd ~${parentRepo + nixosRepo}";
+    cdh = "cd ~${parentRepo + homeManagerRepo}";
     #==<< Git aliases >>=======>
     lg = "lazygit";
-    gu = "git add . ; git commit -m 'update' ; git push";
   };
   # NOTE: `launchFromBash` is used as BASH is the default shell as defined the
   # NixOS config repository. So instead of changing the system files to set a
@@ -58,6 +58,8 @@ in { config = {
     # needs that to be able to launch other shells, so this option should always
     # be true even if you don't use BASH as your preffered shell.blesh
     enable = true;
+    # Makes sure that when you open a new shell the envvars get sourced.
+    initExtra = "unset __HM_SESS_VARS_SOURCED ; . ~/.profile";
     # A pure *B*ash *L*ine *E*ditor (.sh). Gives BASH similar features to
     # base Fish and ZSH autocompletions. Can be really slow on older hardware.
     blesh.enable = true;
@@ -73,6 +75,14 @@ in { config = {
   # A shell where all data is structured. Great for writing scripts.
   programs.nushell = disabled // {
     # launchFromBash = true;
+    # Since Nushell doesn't source variables and aliases itself, we need to set
+    # these values to be the same as the ones set for all shells.
+    environmentVariables = config.home.sessionVariables;
+    shellAliases = config.home.shellAliases;
+    # Nushell file sourcing.
+    extraConfig = ''
+      source ~/.config/nushell/mutConfig.nu
+    '';
   };
 
   #====<< Terminal programs >>=================================================>

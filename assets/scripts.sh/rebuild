@@ -1,0 +1,71 @@
+#! /usr/bin/env sh
+set -eu
+# set -o pipefail # Undefined in POSIX shell
+
+usage() {
+echo "\
+Usage: upgrade [-flags]
+Available flags:
+    -h: Help.                           Prints this page.
+    -v: Verbose.                        \`set -xv\`.
+    -s: System.                         Also rebuild the system (NixOS).
+    -S: Only system.                    Only rebuild the system (NixOS).
+    -j: Max jobs [int].                 Passes \`--max-jobs arg\` into the commands.
+    -j: Corse [int].                    Passes \`--cores arg\` into the commands."
+}
+
+main() {
+    # Variables and their default values.
+    system=false
+    only_system=false
+    max_jobs=""
+    cores=""
+
+    # Option parsing.
+    while getopts ":hvsSj:c:" flag; do
+        case "$flag" in
+        h) # Help.
+            usage; exit 0 ;;
+        v) # Verbose.
+            set -xv ;;
+        s) # System.
+            system=true ;;
+        S) # Only system.
+            only_system=true ;;
+        j) # Max jobs
+            max_jobs="--max-jobs ${OPTARG}" ;;
+        c) # Cores
+            cores="--cores ${OPTARG}" ;;
+        *) # Anything else is invalid and exits the script.
+            usage >&2; exit 2 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    # Makes sure you are not passing any arguments to the script except flags.
+    for arg in "$@"; do
+        echo "Argument \`$arg\` not valid. This script takes no arguments except for short flags" >&2
+        usage >&2
+        exit 1
+    done
+
+    # Checks for incompatable flags.
+    if $system && $only_system; then
+        echo "Using both \`--system (-s)\` and \`--only-system (-S)\` is not allowed" >&2
+        exit 1
+    fi
+
+    # Merge the flags.
+    options="$max_jobs $cores"
+
+    # Logic deciding if to rebuild the system and user.
+    if $system || $only_system; then
+        sudo nixos-rebuild switch $options
+    fi
+    if ! $only_system; then
+        home-manager switch $options
+    fi
+}
+
+# Calls the main function with all arguments given to the script.
+main "$@"
